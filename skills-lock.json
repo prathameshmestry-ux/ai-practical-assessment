@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "skills": {
+    "aem-rde": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/aem-rde/SKILL.md",
+      "computedHash": "962b6baeb30fc6df299f5125bfdfe9f537ff5e7717eacd59da22cef135d340a3"
+    },
+    "aem-workflow": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/aem-workflow/SKILL.md",
+      "computedHash": "4c370f85e82df0453186bf7c4d53c128fd991af5ad277015a8584304b90b89d4"
+    },
+    "code-assessment": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/code-assessment/SKILL.md",
+      "computedHash": "97bf9f1ebc08c2f8e3547f00fdbce7500a515c29ad41a1286628cacde92f23c9"
+    },
+    "content-distribution": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/content-distribution/SKILL.md",
+      "computedHash": "4c871a5f2b0f2fe6ae863164d856c7f6dc05bca48c0096615246e19484f4652d"
+    },
+    "create-component": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/create-component/SKILL.md",
+      "computedHash": "767845dfd3f068da97d2d013467e8d8d31dc3f5bddc834333977c6e193c48b22"
+    },
+    "dispatcher": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/dispatcher/SKILL.md",
+      "computedHash": "df4e73b31ee59dee04870ffd7d7a81fd642bf8c1ccc709635fa9e15889a886d1"
+    },
+    "ensure-agents-md": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/ensure-agents-md/SKILL.md",
+      "computedHash": "cb2afb1f2101bb31f1e1ae23877703985c49bb3c14108d63ea89b154134c315c"
+    },
+    "migration": {
+      "source": "adobe/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "plugins/aem/cloud-service/skills/migration/SKILL.md",
+      "computedHash": "7f6d88163e31ab65c28115629ead1006ec8924b1271fff470f7c00311f97a2e2"
+    }
+  }
+}

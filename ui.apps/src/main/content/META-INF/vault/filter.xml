@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/apps/ai-practical-assessment/clientlibs"/>
+    <filter root="/apps/ai-practical-assessment/components"/>
+    <filter root="/apps/ai-practical-assessment/i18n"/>
+</workspaceFilter>

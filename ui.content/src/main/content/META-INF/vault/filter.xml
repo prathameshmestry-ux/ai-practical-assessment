@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/conf/ai-practical-assessment" mode="merge"/>
+    <filter root="/content/ai-practical-assessment" mode="merge"/>
+    <filter root="/content/dam/ai-practical-assessment" mode="merge">
+        <exclude pattern="/content/dam/ai-practical-assessment(/.*)?"/>
+        <include pattern="/content/dam/ai-practical-assessment/jcr:content(/.*)?"/>
+    </filter>
+    <filter root="/content/dam/ai-practical-assessment/asset.jpg" mode="merge"/>
+    <filter root="/content/experience-fragments/ai-practical-assessment" mode="merge"/>
+</workspaceFilter>
