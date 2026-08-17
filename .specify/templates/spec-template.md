@@ -83,20 +83,31 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right functional requirements.
+  Non-functional items below MUST stay compatible with the project constitution
+  (Cloud Service compliance, module placement, security/secrets).
 -->
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-001**: System MUST [specific capability, e.g., "allow users to create support tickets"]
+- **FR-002**: System MUST [specific capability, e.g., "validate ticket fields"]
+- **FR-003**: Users MUST be able to [key interaction, e.g., "view ticket status"]
+- **FR-004**: System MUST [data requirement, e.g., "persist ticket records"]
+- **FR-005**: System MUST [behavior, e.g., "notify assignees on status change"]
 
 *Example of marking unclear requirements:*
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-007**: System MUST retain ticket data for [NEEDS CLARIFICATION: retention period not specified]
+
+### Non-Functional Requirements *(constitution-aligned)*
+
+- **NFR-001**: Solution MUST be deployable on AEM as a Cloud Service (no
+  removed/incompatible APIs or on-prem-only assumptions)
+- **NFR-002**: Secrets and credentials MUST NOT appear in code, content
+  packages, tests, or docs; ticket/PII MUST NOT be logged in full
+- **NFR-003**: Behavior changes MUST identify required unit, integration,
+  and/or UI test coverage (or an explicit deferred-test rationale)
 
 ### Key Entities *(include if feature involves data)*
 

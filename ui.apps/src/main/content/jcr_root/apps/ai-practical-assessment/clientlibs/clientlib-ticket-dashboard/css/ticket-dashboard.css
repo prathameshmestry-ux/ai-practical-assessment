@@ -1,0 +1,10 @@
+.cmp-ticket-dashboard__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cmp-ticket-dashboard__table th,
+.cmp-ticket-dashboard__table td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+}

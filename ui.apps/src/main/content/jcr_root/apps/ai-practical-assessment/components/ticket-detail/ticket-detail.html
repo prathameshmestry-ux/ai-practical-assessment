@@ -1,0 +1,96 @@
+<sly data-sly-use.model="com.ttn.ai.core.models.TicketDetailModel"
+     data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
+<sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-detail']}"/>
+
+<div class="ticket-mui cmp-ticket-detail" data-ticket-path="${model.ticketApiBasePath}">
+    <div class="ticket-mui-nav">
+        <a class="ticket-mui-btn ticket-mui-btn--text" href="/content/ai-practical-assessment/support/dashboard.html">Back to dashboard</a>
+    </div>
+
+    <div data-sly-test="${model.notFound}" class="ticket-mui-empty cmp-ticket-detail__not-found">
+        <p>Ticket not found.</p>
+    </div>
+
+    <div data-sly-test="${!model.notFound}">
+        <h2 class="ticket-mui__title">Ticket ${model.ticket.ticketId}</h2>
+
+        <div class="ticket-mui-meta">
+            <div class="ticket-mui-meta__item">
+                <div class="ticket-mui-meta__label">Status</div>
+                <div class="ticket-mui-meta__value" id="ticket-status-label">${model.ticket.status}</div>
+            </div>
+            <div class="ticket-mui-meta__item">
+                <div class="ticket-mui-meta__label">Requester</div>
+                <div class="ticket-mui-meta__value">${model.ticket.requester}</div>
+            </div>
+            <div class="ticket-mui-meta__item">
+                <div class="ticket-mui-meta__label">Created</div>
+                <div class="ticket-mui-meta__value">${model.ticket.created}</div>
+            </div>
+            <div class="ticket-mui-meta__item">
+                <div class="ticket-mui-meta__label">Last Modified</div>
+                <div class="ticket-mui-meta__value">${model.ticket.lastModified}</div>
+            </div>
+        </div>
+
+        <div class="ticket-mui-card">
+            <h3 class="ticket-mui__title">Edit ticket</h3>
+            <form id="ticket-update-form" class="cmp-ticket-detail__form">
+                <div class="ticket-mui-field">
+                    <label>Title</label>
+                    <input name="title" type="text" value="${model.ticket.title}" required maxlength="200"/>
+                </div>
+
+                <div class="ticket-mui-field">
+                    <label>Description</label>
+                    <textarea name="description" required maxlength="5000">${model.ticket.description}</textarea>
+                </div>
+
+                <div class="ticket-mui-field">
+                    <label>Priority</label>
+                    <select name="priority">
+                        <option value="low" data-sly-attribute.selected="${model.ticket.priority == 'low'}">Low</option>
+                        <option value="medium" data-sly-attribute.selected="${model.ticket.priority == 'medium'}">Medium</option>
+                        <option value="high" data-sly-attribute.selected="${model.ticket.priority == 'high'}">High</option>
+                    </select>
+                </div>
+
+                <div class="ticket-mui-field">
+                    <label>Assignee</label>
+                    <select name="assignee">
+                        <option value="">Unassigned</option>
+                        <option data-sly-list.assignee="${model.assignees}"
+                                value="${assignee}"
+                                data-sly-attribute.selected="${model.ticket.assignee == assignee}">
+                            ${assignee}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="ticket-mui-actions">
+                    <button type="submit" class="ticket-mui-btn ticket-mui-btn--filled">Save changes</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="ticket-mui-card" data-sly-test="${!model.terminal}">
+            <h3 class="ticket-mui__title">Change status</h3>
+            <form id="ticket-status-form" class="cmp-ticket-detail__status-form">
+                <div class="ticket-mui-field">
+                    <label>New status</label>
+                    <select name="status">
+                        <option data-sly-list.target="${model.allowedStatusTargets}" value="${target}">${target}</option>
+                    </select>
+                </div>
+                <div class="ticket-mui-actions">
+                    <button type="submit" class="ticket-mui-btn ticket-mui-btn--filled">Update status</button>
+                </div>
+            </form>
+        </div>
+
+        <p data-sly-test="${model.terminal}" class="ticket-mui-terminal cmp-ticket-detail__terminal">Ticket is in a terminal state.</p>
+
+        <div id="ticket-detail-message" class="ticket-mui-alert ticket-mui-alert--success" hidden></div>
+        <div id="ticket-detail-error" class="ticket-mui-alert ticket-mui-alert--error" hidden></div>
+    </div>
+</div>

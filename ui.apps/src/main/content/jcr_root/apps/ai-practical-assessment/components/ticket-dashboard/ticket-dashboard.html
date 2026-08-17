@@ -1,0 +1,45 @@
+<sly data-sly-use.model="com.ttn.ai.core.models.TicketListModel"
+     data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
+<sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-dashboard']}"/>
+
+<div class="ticket-mui cmp-ticket-dashboard">
+    <h2 class="ticket-mui__title">Support Tickets</h2>
+    <p class="ticket-mui__subtitle">Monitor and manage all support requests.</p>
+
+    <div class="ticket-mui-actions ticket-mui-nav">
+        <a class="ticket-mui-btn ticket-mui-btn--filled" href="/content/ai-practical-assessment/support/create.html">Create ticket</a>
+    </div>
+
+    <div data-sly-test="${model.empty}" class="ticket-mui-empty cmp-ticket-dashboard__empty">
+        <p>No tickets yet. Create the first support ticket.</p>
+    </div>
+
+    <div data-sly-test="${!model.empty}" class="ticket-mui-table-wrap">
+        <table class="ticket-mui-table cmp-ticket-dashboard__table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Assignee</th>
+                    <th>Last Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-sly-list.ticket="${model.tickets}">
+                    <td>
+                        <a href="/content/ai-practical-assessment/support/ticket.html?ticketId=${ticket.ticketId}">
+                            ${ticket.ticketId}
+                        </a>
+                    </td>
+                    <td>${ticket.title}</td>
+                    <td><span class="ticket-mui-chip">${ticket.status}</span></td>
+                    <td>${ticket.priority}</td>
+                    <td>${ticket.assignee @ context='html'}</td>
+                    <td>${ticket.lastModified}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
