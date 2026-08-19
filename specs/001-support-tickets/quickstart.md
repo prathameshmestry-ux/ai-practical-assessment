@@ -8,7 +8,7 @@ See [data-model.md](./data-model.md) and [contracts/support-ticket-api.md](./con
 ## Prerequisites
 
 - AEM as a Cloud Service SDK running locally (default `http://localhost:4502`)
-- Maven 3.x, **JDK 17** (mandatory per constitution and `.cloudmanager/java-version`)
+- Maven 3.x, **JDK 21** (mandatory per constitution and `.cloudmanager/java-version`)
 - Project built and deployed:
 
 ```bash
@@ -19,9 +19,9 @@ mvn clean install -PautoInstallSinglePackage
 
 | Page | URL |
 |------|-----|
-| Create | http://localhost:4502/content/ai-practical-assessment/support/create.html |
-| Dashboard | http://localhost:4502/content/ai-practical-assessment/support/dashboard.html |
-| Detail | http://localhost:4502/content/ai-practical-assessment/support/ticket.html?ticketId={ticket-id} |
+| Create | http://localhost:4502/content/ai-practical-assessment/support-tickets/create-ticket.html |
+| Dashboard | http://localhost:4502/content/ai-practical-assessment/support-tickets/dashboard.html |
+| Detail | http://localhost:4502/content/ai-practical-assessment/support-tickets/ticket.html?ticketId={ticket-id} |
 
 Log in as `admin` / `admin` (or any test user) before testing.
 

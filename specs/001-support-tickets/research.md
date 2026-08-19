@@ -111,7 +111,8 @@ mirrors existing `helloworld` component structure in the project.
 
 ## 10. Page Structure & UI
 
-**Decision**: Support pages at `/content/ai-practical-assessment/support/{create|dashboard|ticket}`.
+**Decision**: Support pages at `/content/ai-practical-assessment/support-tickets/dashboard`,
+`/support-tickets/create-ticket`, `/support-tickets/ticket` (siblings to ticket data nodes).
 Site root is `cq:Page`. Ticket components use group **AI Capability Project - Content**,
 each with `_cq_dialog` (optional heading), and are allowed in `page-content` container policies. UI uses Material Design tokens via
 `clientlib-ticket-material` (Roboto, cards, chips, elevated buttons).

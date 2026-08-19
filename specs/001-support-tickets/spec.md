@@ -17,7 +17,7 @@
 
 ### Session 2026-08-14
 
-- Q: Where should support pages live? → A: Under `/content/ai-practical-assessment/support/` (no `us/en` locale segment). Site root `/content/ai-practical-assessment` is `cq:Page`.
+- Q: Where should support pages live? → A: Under `/content/ai-practical-assessment/support-tickets/{dashboard|create-ticket|ticket}`. No `us/en` locale pages.
 - Q: How should ticket UI look? → A: Material Design styling via shared `clientlib-ticket-material` (Roboto, cards, elevated buttons, data table).
 - Q: Why are ticket components missing in the editor? → A: Each ticket component has `_cq_dialog`; `componentGroup` is **AI Capability Project - Content**; allowed in `page-content` container policies.
 

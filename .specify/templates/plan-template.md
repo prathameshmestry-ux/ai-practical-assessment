@@ -18,7 +18,7 @@
   the iteration process.
 -->
 
-**Language/Version**: Java 17 (see `.cloudmanager/java-version` and `maven.compiler.release` in root `pom.xml`) + HTL; Node/npm for `ui.frontend`
+**Language/Version**: Java 21 (see `.cloudmanager/java-version` and `maven.compiler.release` in root `pom.xml`) + HTL; Node/npm for `ui.frontend`
 
 **Primary Dependencies**: AEM SDK API (`aem-sdk-api`), Sling Models, OSGi, Core Components, Webpack clientlibs
 

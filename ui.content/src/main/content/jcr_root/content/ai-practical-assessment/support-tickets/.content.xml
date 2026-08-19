@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
-    jcr:primaryType="nt:unstructured"
-    jcr:title="Support Tickets Root"
-    sling:resourceType="ai-practical-assessment/components/tickets-root"/>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Support Tickets"
+        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/page-content"
+        cq:redirectTarget="/content/ai-practical-assessment/support-tickets/dashboard"
+        sling:configRef="/conf/ai-practical-assessment"
+        sling:redirect="{Boolean}true"
+        sling:redirectStatus="{Long}302"
+        sling:resourceType="ai-practical-assessment/components/page"/>
+    <dashboard/>
+    <create-ticket/>
+    <ticket/>
+</jcr:root>

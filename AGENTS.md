@@ -6,7 +6,7 @@ It is built locally using Maven and can be tested against a local Quickstart, an
 
 Production deployments are done through Adobe Cloud Manager using Full Stack Pipelines.
 
-The Java version used in Cloud Manager pipelines and local Maven builds is **Java 17**, declared in `.cloudmanager/java-version`. Local builds MUST use JDK 17; the root `pom.xml` sets `maven.compiler.release=17` and OSGi bundles target `JavaSE-17`.
+The Java version used in Cloud Manager pipelines and local Maven builds is **Java 21**, declared in `.cloudmanager/java-version`. Local builds MUST use JDK 21; the root `pom.xml` sets `maven.compiler.release=21` and OSGi bundles target `JavaSE-21`.
 
 ## Modules
 

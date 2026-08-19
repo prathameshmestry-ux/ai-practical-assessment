@@ -4,7 +4,7 @@
     <jcr:content
         cq:allowedTemplates="[/conf/ai-practical-assessment/settings/wcm/templates/(?!xf-).*]"
         cq:conf="/conf/ai-practical-assessment"
-        cq:redirectTarget="/content/ai-practical-assessment/support/dashboard"
+        cq:redirectTarget="/content/ai-practical-assessment/support-tickets/dashboard"
         cq:template="/conf/ai-practical-assessment/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
         jcr:title="AI Capability Project"
@@ -16,6 +16,5 @@
             <file/>
         </image>
     </jcr:content>
-    <support/>
     <support-tickets/>
 </jcr:root>

@@ -252,4 +252,4 @@ Cannot update `status` via this endpoint (use status endpoint).
 | `ticket-detail` | GET Detail + Sling Model | POST Update, POST Status |
 | `ticket-comments` | GET Detail comments[] | POST Add Comment |
 
-Detail page URL: `/content/ai-practical-assessment/support/ticket.html?ticketId={ticket-id}`
+Detail page URL: `/content/ai-practical-assessment/support-tickets/ticket.html?ticketId={ticket-id}`

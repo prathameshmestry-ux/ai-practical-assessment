@@ -334,7 +334,7 @@ public class TicketServiceImpl implements TicketService {
         return resolver.getResource(ticketRootPath + "/" + ticketId);
     }
 
-    private ResourceResolver getServiceResolver() throws LoginException {
+    private ResourceResolver  getServiceResolver() throws LoginException {
         Map<String, Object> authInfo = Map.of(ResourceResolverFactory.SUBSERVICE, SERVICE_USER_SUBSERVICE);
         return resourceResolverFactory.getServiceResourceResolver(authInfo);
     }

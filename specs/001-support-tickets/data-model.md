@@ -31,14 +31,14 @@ No `ticketRef` property on comments (FR-017).
 
 ```text
 /content/ai-practical-assessment/              # cq:Page (site root)
-├── support/                                   # cq:Page (section)
-│   ├── create/                                # cq:Page — ticket-create
-│   ├── dashboard/                             # cq:Page — ticket-dashboard
-│   └── ticket/                                # cq:Page — ticket-detail + ticket-comments
-└── support-tickets/                           # nt:unstructured (ticket data root)
+└── support-tickets/                           # cq:Page (redirects to dashboard)
+    ├── dashboard/                             # cq:Page — ticket-dashboard
+    ├── create-ticket/                         # cq:Page — ticket-create
+    ├── ticket/                                # cq:Page — ticket-detail + ticket-comments
+    └── {ticket-id}/                           # nt:unstructured (runtime ticket data)
 ```
 
-Locale folders (`us/en`) are **not** used for support pages.
+Locale folders (`us/en`) removed. Site content and XF live directly under `/content/ai-practical-assessment`.
 
 ## Entities
 

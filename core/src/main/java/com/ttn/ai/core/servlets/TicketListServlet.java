@@ -23,7 +23,11 @@ import com.ttn.ai.core.services.dto.TicketListResult;
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(
-        resourceTypes = TicketConstants.RT_TICKETS_ROOT,
+        resourceTypes = {
+                TicketConstants.RT_TICKETS_ROOT,
+                "cq:Page",
+                "ai-practical-assessment/components/page"
+        },
         methods = HttpConstants.METHOD_GET,
         selectors = "list",
         extensions = "json")

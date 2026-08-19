@@ -7,7 +7,7 @@
     <p class="ticket-mui__subtitle">Monitor and manage all support requests.</p>
 
     <div class="ticket-mui-actions ticket-mui-nav">
-        <a class="ticket-mui-btn ticket-mui-btn--filled" href="/content/ai-practical-assessment/support/create.html">Create ticket</a>
+        <a class="ticket-mui-btn ticket-mui-btn--filled" href="/content/ai-practical-assessment/support-tickets/create-ticket.html">Create ticket</a>
     </div>
 
     <div data-sly-test="${model.empty}" class="ticket-mui-empty cmp-ticket-dashboard__empty">
@@ -29,7 +29,7 @@
             <tbody>
                 <tr data-sly-list.ticket="${model.tickets}">
                     <td>
-                        <a href="/content/ai-practical-assessment/support/ticket.html?ticketId=${ticket.ticketId}">
+                        <a href="/content/ai-practical-assessment/support-tickets/ticket.html?ticketId=${ticket.ticketId}">
                             ${ticket.ticketId}
                         </a>
                     </td>

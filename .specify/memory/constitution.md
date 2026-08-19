@@ -1,17 +1,17 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.0.1
+- Version change: 1.0.1 → 1.0.2
 - Modified principles: none (titles unchanged)
 - Added sections: none
 - Removed sections: none
-- Technology & Delivery Constraints: mandated Java 17 for local/CM builds and OSGi bytecode
+- Technology & Delivery Constraints: mandated Java 21 for local/CM builds and OSGi bytecode
 - Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ updated (Java 17 reference)
+  - .specify/templates/plan-template.md ✅ updated (Java 21 reference)
   - .specify/templates/spec-template.md ✅ aligned (no change)
   - .specify/templates/tasks-template.md ✅ aligned (no change)
   - .specify/templates/commands/*.md ⚠ pending (directory not present)
   - README.md ⚠ pending (archetype README)
-  - AGENTS.md ✅ updated (Java 17)
+  - AGENTS.md ✅ updated (Java 21)
   - pom.xml / .cloudmanager/java-version ✅ updated (build alignment)
   - specs/001-support-tickets/plan.md ✅ updated
 - Follow-up TODOs: none
@@ -102,13 +102,13 @@ bypasses are high-impact.
 ## Technology & Delivery Constraints
 
 - **Product**: Support Ticket Management System on AEM as a Cloud Service.
-- **Java (MANDATORY)**: **Java 17**. All compilation, unit tests, integration tests,
-  and Cloud Manager build pipelines MUST target Java 17. The repository MUST
-  declare `17` in `.cloudmanager/java-version`. Maven MUST set
-  `maven-compiler-plugin` `release` (or equivalent `source`/`target`) to **17**
+- **Java (MANDATORY)**: **Java 21**. All compilation, unit tests, integration tests,
+  and Cloud Manager build pipelines MUST target Java 21. The repository MUST
+  declare `21` in `.cloudmanager/java-version`. Maven MUST set
+  `maven-compiler-plugin` `release` (or equivalent `source`/`target`) to **21**
   in the root `pom.xml` and child modules MUST NOT downgrade. OSGi bundles MUST
-  declare `Bundle-RequiredExecutionEnvironment: JavaSE-17` (or equivalent Bnd
-  `-release: 17`). Java 8 and Java 11 bytecode or build JDKs MUST NOT be used.
+  declare `Bundle-RequiredExecutionEnvironment: JavaSE-21` (or equivalent Bnd
+  `-release: 21`). Java 8, Java 11, and Java 17 bytecode or build JDKs MUST NOT be used.
 - **Stack**: Maven multi-module AEMaaCS archetype layout, HTL, OSGi, Webpack
   clientlibs via `ui.frontend`, Dispatcher Tools for local validation.
 - **Dependencies**: Do NOT add Maven/npm dependencies unless necessary. Prefer
@@ -154,4 +154,4 @@ touches `core`, `ui.*`, `dispatcher`, or deployable packages MUST affirm
 alignment with Principles I–V. Waivers require Complexity Tracking entries
 and reviewer approval.
 
-**Version**: 1.0.1 | **Ratified**: 2026-08-11 | **Last Amended**: 2026-08-13
+**Version**: 1.0.2 | **Ratified**: 2026-08-11 | **Last Amended**: 2026-08-17
