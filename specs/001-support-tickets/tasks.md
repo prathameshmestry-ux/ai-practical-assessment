@@ -61,11 +61,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - [x] T014 [US1] Implement `CreateTicketServlet` (`POST .../support-tickets.ticket.json`) in `core/src/main/java/com/ttn/ai/core/servlets/CreateTicketServlet.java`
 - [x] T015 [P] [US1] Create `ticket-create` component (`.content.xml`, HTL, dialog) in `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-create/`
 - [x] T016 [P] [US1] Add `ticket-create` clientlib (form POST/AJAX + CSRF) in `ui.apps/.../clientlibs/clientlib-ticket-create/`
-<<<<<<< Updated upstream
-- [x] T017 [US1] Create page `ui.content/src/main/content/jcr_root/content/ai-practical-assessment/support/create/.content.xml` with `ticket-create` component
-=======
 - [x] T017 [US1] Create page `ui.content/.../support-tickets/create-ticket/.content.xml` with `ticket-create` component
->>>>>>> Stashed changes
 - [x] T018 [US1] Wire `ticket-create` HTL to `CreateTicketServlet` per `contracts/support-ticket-api.md` endpoint 1
 
 **Checkpoint**: User Story 1 complete — ticket creation works standalone
@@ -83,11 +79,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - [x] T019 [US2] Implement `TicketListServlet` (`GET .../support-tickets.list.json`) in `core/src/main/java/com/ttn/ai/core/servlets/TicketListServlet.java`
 - [x] T020 [P] [US2] Create `TicketListModel` in `core/src/main/java/com/ttn/ai/core/models/TicketListModel.java`
 - [x] T021 [P] [US2] Create `ticket-dashboard` component in `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-dashboard/`
-<<<<<<< Updated upstream
-- [x] T022 [US2] Create page `ui.content/.../support/dashboard/.content.xml` with `ticket-dashboard` component
-=======
 - [x] T022 [US2] Create page `ui.content/.../support-tickets/dashboard/.content.xml` with `ticket-dashboard` component
->>>>>>> Stashed changes
 - [x] T023 [US2] Implement dashboard HTL: ticket table, empty state, links to `ticket.html?ticketId={id}`
 
 **Checkpoint**: User Stories 1 + 2 both independently functional
@@ -105,11 +97,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - [x] T024 [P] [US3] Create `TicketDetailModel` in `core/src/main/java/com/ttn/ai/core/models/TicketDetailModel.java`
 - [x] T025 [US3] Implement `UpdateTicketServlet` (`POST .../{ticket-id}.update.json`) in `core/src/main/java/com/ttn/ai/core/servlets/UpdateTicketServlet.java`
 - [x] T026 [P] [US3] Create `ticket-detail` component in `ui.apps/.../components/ticket-detail/`
-<<<<<<< Updated upstream
-- [x] T027 [US3] Create page `ui.content/.../support/ticket/.content.xml` with `ticket-detail` (reads `ticketId` query param)
-=======
 - [x] T027 [US3] Create page `ui.content/.../support-tickets/ticket/.content.xml` with `ticket-detail` (reads `ticketId` query param)
->>>>>>> Stashed changes
 - [x] T028 [US3] Implement detail HTL: display all fields, edit form, assignee dropdown from `AssigneeConfig`, validation errors
 
 **Checkpoint**: Create → dashboard → detail → update flow works
@@ -155,11 +143,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 
 - [x] T036 [P] Integration test `SupportTicketServletIT` in `it.tests/src/main/java/com/ttn/ai/it/tests/SupportTicketServletIT.java` (create, list, update, comment, status)
 - [x] T037 Run `mvn clean test -pl core` and fix failures
-<<<<<<< Updated upstream
-- [x] T038 Run `mvn clean install` full build (Java 17)
-=======
 - [x] T038 Run `mvn clean install` full build (Java 21)
->>>>>>> Stashed changes
 - [ ] T039 Execute quickstart.md VS-1 through VS-6 on local AEM SDK
 - [x] T040 [P] Verify no PII in servlet logs; CSRF on Author POST endpoints
 

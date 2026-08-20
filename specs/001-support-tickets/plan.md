@@ -103,18 +103,10 @@ ui.config/src/main/content/jcr_root/apps/ai-practical-assessment/osgiconfig/conf
 └── org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-ai-practical-assessment.cfg.json
 
 ui.content/src/main/content/jcr_root/content/ai-practical-assessment/
-<<<<<<< Updated upstream
-├── support-tickets/                    # ticket data root (empty on deploy)
-└── support/
-    ├── create/                         # page with ticket-create component
-    ├── dashboard/                      # page with ticket-dashboard component
-    └── ticket/                         # page with ticket-detail + ticket-comments
-=======
 └── support-tickets/                    # tickets-root (API + data)
     ├── dashboard/                      # ticket-dashboard
     ├── create-ticket/                  # ticket-create
     └── ticket/                         # ticket-detail + ticket-comments
->>>>>>> Stashed changes
 
 it.tests/src/main/java/com/ttn/ai/it/tests/
 └── SupportTicketServletIT.java
@@ -127,51 +119,21 @@ ui.tests/                               # optional Cypress journeys
 Each user-facing concern is a separate AEM component (NFR-004 / spec assumption).
 Write operations use dedicated servlets (JSON) invoked from component clientlibs or
 form POST with redirect. Ticket **data** lives under `support-tickets/`; **pages**
-<<<<<<< Updated upstream
-live under `support/` directly under the site root (no `us/en` locale segment).
-=======
 live under `support-tickets/` as sibling pages to ticket data nodes.
->>>>>>> Stashed changes
 
 ## Component & Page Map
 
 | Page | Path | Components | User Story |
 |------|------|------------|------------|
-<<<<<<< Updated upstream
-| Create Ticket | `/content/ai-practical-assessment/support/create` | `ticket-create` | US1 |
-| Dashboard | `/content/ai-practical-assessment/support/dashboard` | `ticket-dashboard` | US2 |
-| Ticket Detail | `/content/ai-practical-assessment/support/ticket` | `ticket-detail`, `ticket-comments` | US3–US5 |
-=======
 | Dashboard | `/content/ai-practical-assessment/support-tickets/dashboard` | `ticket-dashboard` | US2 |
 | Create Ticket | `/content/ai-practical-assessment/support-tickets/create-ticket` | `ticket-create` | US1 |
 | Ticket Detail | `/content/ai-practical-assessment/support-tickets/ticket` | `ticket-detail`, `ticket-comments` | US3–US5 |
->>>>>>> Stashed changes
 
 Detail page reads `ticketId` from query parameter (`?ticketId={ticket-id}`).
 
 All four ticket components include `_cq_dialog` (optional heading) and use
 `componentGroup="AI Capability Project - Content"` so they appear in the page editor.
 
-<<<<<<< Updated upstream
-## Build & Java 17 Configuration
-
-All Java build targets MUST align with constitution v1.0.1 (Java 17 mandatory).
-
-| Setting | Location | Value |
-|---------|----------|-------|
-| Cloud Manager JDK | `.cloudmanager/java-version` | `17` |
-| Compiler release | root `pom.xml` `<maven.compiler.release>` | `17` |
-| `maven-compiler-plugin` | root `pom.xml` `<release>` | `${maven.compiler.release}` (17) |
-| Enforcer `requireJavaVersion` | root `pom.xml` | `17.0.0` minimum |
-| IT module compiler | `it.tests/pom.xml` | inherits parent (`17`) |
-| OSGi execution environment | root `pom.xml` Bnd `bnd` block | `Bundle-RequiredExecutionEnvironment: JavaSE-17` |
-
-**OSGi bundle targets**: The `core` bundle (and any future Java bundles) compile to
-Java 17 bytecode via the parent compiler settings; Bnd emits `JavaSE-17` in bundle
-manifests. No module may set `source`/`target` below 17.
-
-**Local prerequisite**: JDK 17 for `mvn clean install` and AEM SDK Quickstart
-=======
 ## Build & Java 21 Configuration
 
 All Java build targets MUST align with constitution v1.0.2 (Java 21 mandatory).
@@ -190,7 +152,6 @@ Java 21 bytecode via the parent compiler settings; Bnd emits `JavaSE-21` in bund
 manifests. No module may set `source`/`target` below 21.
 
 **Local prerequisite**: JDK 21 for `mvn clean install` and AEM SDK Quickstart
->>>>>>> Stashed changes
 (runtime JDK requirements for the SDK itself remain separate from project bytecode).
 
 ## Complexity Tracking

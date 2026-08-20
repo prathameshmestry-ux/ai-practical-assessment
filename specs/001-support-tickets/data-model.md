@@ -150,6 +150,6 @@ Exclude `comments/` folder nodes by requiring `ticketId` property (comments use
 
 | Mapping | Subservice | ACL |
 |---------|------------|-----|
-| `ai-practical-assessment:ticket-service` | `ticket-service` | `jcr:write` on `/content/ai-practical-assessment/support-tickets` |
+| `ai-practical-assessment:ticket-service` | `ticket-service` | read, write, create, delete on `/content/ai-practical-assessment` hierarchy via `ui.content` `rep:policy` |
 
 Defined in `ui.config` per AEM service user best practices (constitution V).

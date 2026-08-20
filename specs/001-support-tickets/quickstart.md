@@ -113,7 +113,7 @@ mvn clean install
 | Symptom | Check |
 |---------|-------|
 | 401 on POST | User not logged in; missing CSRF token on Author |
-| 403 / save fails | Service user mapping in `ui.config`; ACL on `support-tickets` path |
+| 403 / save fails | Service user mapping in `ui.config`; `rep:policy` on `/content/ai-practical-assessment` in `ui.content` |
 | Dashboard empty but nodes exist | Nodes missing `ticketId` property; wrong path |
 | Components missing in editor | Redeploy `ui.apps`; confirm `componentGroup` is **AI Capability Project - Content** and `_cq_dialog` exists on ticket components |
 
