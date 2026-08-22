@@ -60,7 +60,14 @@ Log in as `admin` / `admin` (or any test user) before testing.
 3. Verify node at `.../comments/{comment-id}` in CRXDE Lite.
 4. Submit empty comment → **Expected**: validation error.
 
-### VS-5: Status Workflow (US3 / SC-003, SC-004)
+### VS-5: Status Workflow (US5 / SC-003, SC-004)
+
+1. Open non-terminal ticket detail.
+2. **Expected**: Single **colored status badge** with label + down chevron—not separate chip plus "Change status" field.
+3. Click badge → **Expected**: Dropdown menu opens with **one row per** allowed next status (e.g. `in-progress` and `cancelled` are two items, not one combined label).
+4. **Expected**: Badge uses status-specific colors; menu has elevation/shadow (FR-010b)—not native `<select>`.
+5. Pick menu item → **Expected**: status saves **without full page reload**; badge label/color updates in place; menu shows new allowed targets; `#ticket-last-modified` updates; dashboard matches on next visit (FR-010c).
+6. Transition to `closed` or `cancelled` → **Expected**: dropdown removed; read-only badge only; terminal notice visible—still no reload.
 
 For a fresh ticket, execute transitions and verify after each:
 
@@ -79,6 +86,8 @@ Negative tests:
 | `closed` | → `open` | Blocked, terminal state message |
 
 Repeat cancel path: `open` → `cancelled` and `in-progress` → `cancelled`.
+
+Terminal check: open **Closed** or **Cancelled** ticket → **Expected**: status is read-only text, no dropdown.
 
 ### VS-6: API Contract Smoke (curl)
 

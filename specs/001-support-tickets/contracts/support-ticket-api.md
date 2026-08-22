@@ -227,7 +227,7 @@ Cannot update `status` via this endpoint (use status endpoint).
 | `resolved` | `in-progress` |
 | `closed` | `resolved` |
 
-**Response** `200 OK`: ticket object with new status.
+**Response** `200 OK`: envelope `{ success: true, data: { ticketId, status, lastModified, ... } }`. Client uses `data.status` and `data.lastModified` for in-place DOM update (FR-010c)—no page reload required.
 
 **Response** `400` + `INVALID_STATUS_TRANSITION`: disallowed transition.
 
@@ -249,7 +249,7 @@ Cannot update `status` via this endpoint (use status endpoint).
 |-----------|------|-------|
 | `ticket-create` | — | POST Create Ticket |
 | `ticket-dashboard` | GET List (or Sling Model) | — |
-| `ticket-detail` | GET Detail + Sling Model | POST Update, POST Status |
+| `ticket-detail` | GET Detail + Sling Model | POST Update (fields), POST Status (Jira-style badge menu → Fetch + in-place DOM update, FR-010c) |
 | `ticket-comments` | GET Detail comments[] | POST Add Comment |
 
 Detail page URL: `/content/ai-practical-assessment/support-tickets/ticket.html?ticketId={ticket-id}`

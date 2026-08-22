@@ -21,6 +21,23 @@
 - Q: How should ticket UI look? → A: Material Design styling via shared `clientlib-ticket-material` (Roboto, cards, elevated buttons, data table).
 - Q: Why are ticket components missing in the editor? → A: Each ticket component has `_cq_dialog`; `componentGroup` is **AI Capability Project - Content**; allowed in `page-content` container policies.
 
+### Session 2026-08-20
+
+- Q: How should status be changed on the ticket detail view? → A: One status control in the meta area (not a separate "Change status" section). **Current status** displays as read-only Material chip/label. **Dropdown** (Material outlined select) lists **only** allowed next statuses—one option per status; current status is **not** a dropdown option. Terminal tickets: read-only status only, no dropdown.
+- Q: How must the status dropdown look? → A: Match Material Design patterns used elsewhere (`clientlib-ticket-material`): outlined select field, label, focus ring, same typography/spacing as priority/assignee controls—not plain browser default styling.
+- Q: How must allowed statuses appear in the dropdown? → A: Each allowed next status is its **own** selectable option (e.g. `In Progress` and `Cancelled` are two separate rows). System MUST NOT combine multiple statuses into one option or one concatenated label.
+
+### Session 2026-08-21
+
+- Q: How should status control look on ticket detail? → A: **Unified Jira-style status button**—one control only. **Current status** is the interactive trigger: colored status badge/block with label text and down chevron. Clicking the badge opens a dropdown menu listing **only** allowed next statuses (one menu item each). Current status MUST NOT appear as a separate read-only chip above a second "Change status" field.
+- Q: What about terminal tickets? → A: Show current status as read-only colored badge only—no chevron, no dropdown, no click action.
+- Q: How must menu items appear? → A: Each allowed next status is its own row in the dropdown menu; system MUST NOT merge multiple statuses into one item.
+
+### Session 2026-08-22
+
+- Q: Must status change reload the page? → A: **No.** Status change on ticket detail MUST complete without full page refresh. After successful save, the status badge MUST update in place (label, color, menu options, or terminal read-only state).
+- Q: How is async status update delivered? → A: Dedicated ticket-detail client script intercepts menu selection, sends async request to the status API, and updates the status control DOM on success—no navigation or reload.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Create Support Ticket (Priority: P1)
@@ -65,7 +82,7 @@ As a support agent, I want to open a ticket's detail view and update its fields 
 
 **Acceptance Scenarios**:
 
-1. **Given** a ticket exists, **When** a user opens it from the dashboard, **Then** the detail view shows all ticket fields, current status, assignee, requester, and timestamps.
+1. **Given** a ticket exists, **When** a user opens it from the dashboard, **Then** the detail view shows a unified status control: current status as a colored badge with chevron (when transitions allowed); clicking it opens a menu of valid next statuses only (one item each).
 2. **Given** a user is on the detail view, **When** they update editable fields and save, **Then** changes are persisted and reflected on subsequent views.
 3. **Given** a user reassigns a ticket to another valid assignee, **When** they save, **Then** the assignee field updates and remains visible on the dashboard and detail view.
 4. **Given** a user enters invalid data (e.g., empty title), **When** they attempt to save, **Then** validation errors are shown and no partial save occurs.
@@ -98,7 +115,7 @@ As a support agent, I want to change a ticket's status through allowed transitio
 
 **Acceptance Scenarios**:
 
-1. **Given** a ticket with status **Open**, **When** an agent changes status to **In Progress**, **Then** the new status is saved and shown on dashboard and detail views.
+1. **Given** a ticket with status **Open**, **When** an agent clicks the status badge, opens the menu, and picks **In Progress** (separate menu item from **Cancelled**), **Then** the new status is saved, the badge updates **on the same page without reload**, and the dashboard reflects the change on next visit.
 2. **Given** a ticket with status **In Progress**, **When** an agent changes status to **Resolved**, **Then** the status updates successfully.
 3. **Given** a ticket with status **Resolved**, **When** an agent changes status to **Closed**, **Then** the status updates successfully and the ticket is treated as closed for active work.
 4. **Given** a ticket with status **Open**, **When** an agent changes status to **Cancelled**, **Then** the status updates successfully.
@@ -137,6 +154,9 @@ As a support agent, I want to change a ticket's status through allowed transitio
   - **In Progress** → **Resolved**
   - **In Progress** → **Cancelled**
   - **Resolved** → **Closed**
+- **FR-010a**: On the ticket detail view, status MUST use a **single unified control** (Jira-style): the **current status** acts as the dropdown trigger—a colored status badge/block showing the status label and a down chevron. Clicking the badge MUST open a dropdown menu listing **only** valid next statuses from FR-010—**one menu item per status**; current status MUST NOT appear in the menu. System MUST NOT show a separate read-only chip plus a second "Change status" field or native `<select>`. Terminal statuses (**Closed**, **Cancelled**) MUST show read-only colored badge only—no chevron, no menu, no status change action.
+- **FR-010b**: Status badge and dropdown menu MUST use consistent ticket UI styling (Roboto, elevation/shadow on menu, status-specific colors, focus/hover states, chevron affordance)—not plain browser default `<select>`.
+- **FR-010c**: Changing ticket status on the detail view MUST NOT trigger a full page reload. On successful status save, the status badge MUST update immediately in place (label, styling, allowed menu items, or terminal read-only state). Failed transitions MUST leave the current badge unchanged and show a user-visible error.
 - **FR-011**: System MUST reject any status transition not listed in FR-010 and leave the current status unchanged.
 - **FR-012**: System MUST treat **Closed** and **Cancelled** as terminal states where further status changes are not permitted.
 - **FR-013**: System MUST persist all tickets and comments so they survive session end and are available on subsequent visits.

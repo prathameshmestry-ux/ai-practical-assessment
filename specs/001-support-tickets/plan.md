@@ -1,6 +1,6 @@
 # Implementation Plan: Support Ticket Management System
 
-**Branch**: `001-support-tickets` | **Date**: 2026-08-12 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-support-tickets` | **Date**: 2026-08-22 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/001-support-tickets/spec.md`
 
@@ -8,7 +8,10 @@
 
 Deliver a Support Ticket Management System on AEM as a Cloud Service where authenticated
 users create tickets, browse a dashboard, open ticket detail views, update fields,
-reassign, add comments, and transition status through a enforced workflow. Tickets
+reassign, add comments, and transition status through a enforced workflow. Ticket detail
+shows **unified Jira-style status badge** (current status = dropdown trigger with chevron;
+menu lists allowed next statuses only) per FR-010a/b. Status changes use **async Fetch** in
+`clientlib-ticket-detail` with **in-place DOM update**—no full page reload (FR-010c). Tickets
 persist as JCR nodes at `/content/ai-practical-assessment/support-tickets/{ticket-id}`;
 comments are child nodes at `.../comments/{comment-id}`.
 
@@ -40,13 +43,13 @@ operations; sample pages and folder structure ship in `ui.content`.
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
-*Source: `.specify/memory/constitution.md` (AI Capability Project Constitution v1.0.1)*
+*Source: `.specify/memory/constitution.md` (AI Capability Project Constitution v1.0.2)*
 
 | Principle | Pre-Phase 0 | Post-Phase 1 |
 |-----------|-------------|--------------|
 | **I. Cloud Service Compliance** | ✅ Pass — Resource API, QueryBuilder with limits, no deprecated APIs | ✅ Pass — design uses standard Sling/OSGi patterns; pagination documented in research |
 | **II. Module & Package Discipline** | ✅ Pass — `core`, `ui.apps`, `ui.content`, `ui.config`, tests only | ✅ Pass — no new modules; components in `ui.apps`, logic in `core` |
-| **III. Spec-Driven Delivery** | ✅ Pass — spec + clarify complete; plan follows FR/NFR | ✅ Pass — data model and contracts trace to FR-001–FR-017 |
+| **III. Spec-Driven Delivery** | ✅ Pass — spec + clarify complete; plan follows FR/NFR | ✅ Pass — data model and contracts trace to FR-001–FR-010c |
 | **IV. Test & Validation Discipline** | ✅ Pass — unit (service, status machine), IT (servlets), UI (optional Cypress) planned | ✅ Pass — quickstart defines validation scenarios per story |
 | **V. Security & Secrets Hygiene** | ✅ Pass — service user mapping in `ui.config`; no PII logging | ✅ Pass — servlet auth checks session user; CSRF on writes |
 | **VI. Adobe Official AI Agent Skills** | ✅ Pass — use `create-component` skill for HTL components | ✅ Pass — component creation follows archetype + skill patterns |
@@ -130,6 +133,21 @@ live under `support-tickets/` as sibling pages to ticket data nodes.
 | Ticket Detail | `/content/ai-practical-assessment/support-tickets/ticket` | `ticket-detail`, `ticket-comments` | US3–US5 |
 
 Detail page reads `ticketId` from query parameter (`?ticketId={ticket-id}`).
+
+### Ticket detail — status control (FR-010a / FR-010b / FR-010c)
+
+| State | UI | Save behavior |
+|-------|-----|---------------|
+| Non-terminal | **Unified status badge button** (`#ticket-status-trigger`): colored block showing current status + down chevron; click opens **dropdown menu** (`#ticket-status-menu`) with **only** `TicketDetailModel.allowedStatusTargets`—**one `<button>` menu item per status** via `<sly data-sly-list>` inside `<ul>` | Menu item click → Fetch POST `.../status.status.json`; **no page reload**; JS updates badge label, color class, menu items, and `#ticket-last-modified` from response `data` (FR-010c) |
+| Terminal (`closed`, `cancelled`) | Read-only colored badge (`ticket-mui-status-btn--readonly`)—no chevron, no menu | No status POST; JS may convert interactive dropdown to read-only badge when transition reaches terminal state |
+
+**HTL anchors**: `#ticket-status-root` (`data-current-status`), `#ticket-status-dropdown`, `#ticket-status-trigger`, `#ticket-status-menu`, `#ticket-last-modified`, `#ticket-terminal-notice` (hidden until terminal).
+
+**HTL rule**: Do **not** put `data-sly-list` on `<option>` (Set iteration merges labels). Use `<sly data-sly-list>` inside menu `<ul>` with one `<button data-status>` per target. Do **not** use native `<select>` for status.
+
+**Styling (FR-010b)**: `ticket-mui-status-btn` with status-specific color modifiers (`--open`, `--in-progress`, etc.); elevated `ticket-mui-status-menu`; Material Symbols chevron (`expand_more`). Dashboard list still uses `ticket-mui-chip` for status column.
+
+**ClientLib (FR-010c)**: `clientlib-ticket-detail` (`ticket-detail.js`) toggles menu; intercepts menu item click; POSTs via Fetch with CSRF header; on success calls `applyStatusToDom()`—updates badge, rebuilds menu from client transition map (mirrors `TicketStatusTransitionValidator`), or replaces dropdown with read-only badge + shows terminal notice. **Must not** call `window.location.reload()`.
 
 All four ticket components include `_cq_dialog` (optional heading) and use
 `componentGroup="AI Capability Project - Content"` so they appear in the page editor.

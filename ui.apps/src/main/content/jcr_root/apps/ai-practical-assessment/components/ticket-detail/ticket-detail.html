@@ -17,7 +17,35 @@
         <div class="ticket-mui-meta">
             <div class="ticket-mui-meta__item">
                 <div class="ticket-mui-meta__label">Status</div>
-                <div class="ticket-mui-meta__value" id="ticket-status-label">${model.ticket.status}</div>
+                <div id="ticket-status-root" class="ticket-mui-status" data-current-status="${model.ticket.status}">
+                    <div data-sly-test="${!model.terminal}" class="ticket-mui-status-dropdown" id="ticket-status-dropdown">
+                        <button type="button"
+                                id="ticket-status-trigger"
+                                class="ticket-mui-status-btn ticket-mui-status-btn--${model.ticket.status}"
+                                aria-haspopup="listbox"
+                                aria-expanded="false"
+                                aria-controls="ticket-status-menu">
+                            <span class="ticket-mui-status-btn__label">${model.ticket.status}</span>
+                            <span class="ticket-mui-status-btn__chevron material-symbols-outlined" aria-hidden="true">expand_more</span>
+                        </button>
+                        <ul id="ticket-status-menu"
+                            class="ticket-mui-status-menu"
+                            role="listbox"
+                            hidden>
+                            <sly data-sly-list.target="${model.allowedStatusTargets}">
+                                <li role="presentation">
+                                    <button type="button"
+                                            class="ticket-mui-status-menu__item"
+                                            role="option"
+                                            data-status="${target}">${target}</button>
+                                </li>
+                            </sly>
+                        </ul>
+                    </div>
+                    <span data-sly-test="${model.terminal}"
+                          id="ticket-status-readonly"
+                          class="ticket-mui-status-btn ticket-mui-status-btn--readonly ticket-mui-status-btn--${model.ticket.status}">${model.ticket.status}</span>
+                </div>
             </div>
             <div class="ticket-mui-meta__item">
                 <div class="ticket-mui-meta__label">Requester</div>
@@ -29,7 +57,7 @@
             </div>
             <div class="ticket-mui-meta__item">
                 <div class="ticket-mui-meta__label">Last Modified</div>
-                <div class="ticket-mui-meta__value">${model.ticket.lastModified}</div>
+                <div id="ticket-last-modified" class="ticket-mui-meta__value">${model.ticket.lastModified}</div>
             </div>
         </div>
 
@@ -73,22 +101,9 @@
             </form>
         </div>
 
-        <div class="ticket-mui-card" data-sly-test="${!model.terminal}">
-            <h3 class="ticket-mui__title">Change status</h3>
-            <form id="ticket-status-form" class="cmp-ticket-detail__status-form">
-                <div class="ticket-mui-field">
-                    <label>New status</label>
-                    <select name="status">
-                        <option data-sly-list.target="${model.allowedStatusTargets}" value="${target}">${target}</option>
-                    </select>
-                </div>
-                <div class="ticket-mui-actions">
-                    <button type="submit" class="ticket-mui-btn ticket-mui-btn--filled">Update status</button>
-                </div>
-            </form>
-        </div>
-
-        <p data-sly-test="${model.terminal}" class="ticket-mui-terminal cmp-ticket-detail__terminal">Ticket is in a terminal state.</p>
+        <p id="ticket-terminal-notice"
+           class="ticket-mui-terminal cmp-ticket-detail__terminal"
+           data-sly-attribute.hidden="${!model.terminal}">Ticket is in a terminal state.</p>
 
         <div id="ticket-detail-message" class="ticket-mui-alert ticket-mui-alert--success" hidden></div>
         <div id="ticket-detail-error" class="ticket-mui-alert ticket-mui-alert--error" hidden></div>

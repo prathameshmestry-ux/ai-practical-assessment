@@ -50,7 +50,7 @@ Locale folders (`us/en`) removed. Site content and XF live directly under `/cont
 | `title` | String | Yes | — | Non-blank; ≤200 chars |
 | `description` | String | Yes | — | Non-blank; ≤5000 chars |
 | `priority` | Enum | Yes | `medium` | One of: `low`, `medium`, `high` |
-| `status` | Enum | Yes | `open` | See state machine below |
+| `status` | Enum | Yes | `open` | See state machine below; on detail UI: unified Jira-style status badge (FR-010a/b) |
 | `requester` | String | Yes | session user | Valid AEM user ID |
 | `assignee` | String | No | null | Must be in configured assignee list if set |
 | `created` | DateTime | Yes | now | Set on create only |
@@ -138,6 +138,11 @@ Exclude `comments/` folder nodes by requiring `ticketId` property (comments use
 - Deleting a ticket node removes all descendant comment nodes (JCR subtree delete).
 - Updating ticket fields does not modify comments.
 - Comments may be added when status is `closed` or `cancelled` (spec edge case).
+
+## Presentation (ticket-detail)
+
+- **Status (FR-010a/b/c)**: Unified **status badge button** with chevron (non-terminal). Menu lists allowed next statuses only. **Async status save** via `clientlib-ticket-detail` Fetch—updates badge, menu, `lastModified`, and terminal state **without page reload**. Terminal → read-only colored badge.
+- **Other fields**: Title, description, priority, assignee in edit form (unchanged).
 
 ## OSGi Configuration
 

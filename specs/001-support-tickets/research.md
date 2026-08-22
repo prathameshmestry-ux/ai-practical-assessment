@@ -1,6 +1,6 @@
 # Research: Support Ticket Management System
 
-**Feature**: 001-support-tickets | **Date**: 2026-08-12
+**Feature**: 001-support-tickets | **Date**: 2026-08-22 (§12 added)
 
 ## 1. Ticket & Comment Persistence
 
@@ -122,7 +122,41 @@ surfaces ticket components in editor; Material styling improves UX without React
 
 **Alternatives considered**:
 - **Locale path `us/en/support`**: Matches archetype default; rejected per product direction.
-- **React MUI in ui.frontend**: Heavier build; rejected for HTL-first assessment scope.
+
+## 11. Status Field UX (FR-010a / FR-010b)
+
+**Decision** (updated 2026-08-21): `ticket-detail` meta area uses **unified Jira-style status control**.
+Current status is the **interactive badge button** (`ticket-mui-status-btn`) with status-specific
+color and down chevron. Click opens **dropdown menu** (`ticket-mui-status-menu`) listing **only**
+`allowedStatusTargets`—**one menu item per status** via `<sly data-sly-list>` inside `<ul>`.
+Current status is **not** in the menu. Terminal tickets: read-only badge only (no chevron, no menu).
+Status POST unchanged (`status.status.json`). JS in `clientlib-ticket-detail` handles toggle,
+menu selection, and close-on-outside/Esc.
+
+**Rationale**: Spec 2026-08-21 clarifications; single control matches Jira UX; avoids chip + select split.
+
+**Alternatives considered**:
+- **Chip + outlined select** (2026-08-20): Rejected—two controls; superseded by unified badge.
+- **Current status as menu item**: Rejected—confuses read vs change.
+- **Separate status card**: Rejected per FR-010a.
+- **Native `<select>`**: Rejected per FR-010b—must use custom badge + menu styling.
+
+## 12. Async Status Update (FR-010c)
+
+**Decision** (2026-08-22): Status changes on ticket detail use **Fetch API** from
+`clientlib-ticket-detail/js/ticket-detail.js`. On `200` + `success: true`, JS updates DOM
+in place—badge label, status color modifier class, menu items for next allowed targets
+(client-side map aligned with `TicketStatusTransitionValidator`), `lastModified` meta field,
+and terminal conversion (remove dropdown, show `#ticket-terminal-notice`). **No**
+`window.location.reload()`.
+
+**Rationale**: Spec FR-010c; keeps user context on detail page; matches existing AJAX pattern
+for ticket field updates.
+
+**Alternatives considered**:
+- **Full page reload after status POST**: Rejected per FR-010c.
+- **Return `allowedStatusTargets` in status API response**: Deferred—client map sufficient for v1;
+  API extension optional later to avoid duplication.
 
 ## 9. Testing Strategy
 

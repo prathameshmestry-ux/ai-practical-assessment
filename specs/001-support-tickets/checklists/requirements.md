@@ -35,4 +35,7 @@
 - Re-validated 2026-08-12 after clarify session: repository paths and parent-child comment linkage added per user decision (FR-015–FR-017, Clarifications).
 - NFR-004 references modular UI regions (constitution/module discipline) without prescribing AEM HTL APIs in functional requirements.
 - Detailed component and service breakdown deferred to `/speckit-plan`.
-- Ready for `/speckit-plan`.
+- Re-validated 2026-08-20 (b): status UX—current status read-only chip; MUI outlined select; one option per allowed next status (FR-010a/b).
+- Re-validated 2026-08-21: status UX—unified Jira-style status badge trigger + dropdown menu; one menu item per allowed next status (FR-010a/b).
+- Re-validated 2026-08-22: status change—no full page reload; in-place badge update after async save (FR-010c).
+- Ready for `/speckit-plan` or implementation alignment.

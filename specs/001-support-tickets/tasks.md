@@ -42,7 +42,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - [x] T008 [P] Create `AssigneeConfig` OSGi component in `core/src/main/java/com/ttn/ai/core/config/AssigneeConfig.java`
 - [x] T009 [P] Add `TicketServiceImpl` OSGi config at `ui.config/src/main/content/jcr_root/apps/ai-practical-assessment/osgiconfig/config/com.ttn.ai.core.services.impl.TicketServiceImpl.cfg.json`
 - [x] T010 [P] Add service user mapper amended config at `ui.config/src/main/content/jcr_root/apps/ai-practical-assessment/osgiconfig/config/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-ai-practical-assessment.cfg.json`
-- [x] T011 Add service user `rep:policy` ACL for `/content/ai-practical-assessment/support-tickets` in `ui.content` (per data-model.md service user table)
+- [x] T011 Add service user `rep:policy` ACL for `/content/ai-practical-assessment` in `ui.content` (per data-model.md service user table)
 - [x] T012 [P] Unit tests for `TicketStatusTransitionValidator` in `core/src/test/java/com/ttn/ai/core/services/TicketStatusTransitionValidatorTest.java`
 - [x] T013 Unit tests for `TicketServiceImpl` CRUD in `core/src/test/java/com/ttn/ai/core/services/TicketServiceImplTest.java`
 
@@ -123,14 +123,14 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 
 ## Phase 7: User Story 5 - Manage Ticket Status Workflow (Priority: P5)
 
-**Goal**: Enforce FR-010 transitions; block invalid and terminal-state changes
+**Goal**: Enforce FR-010 transitions; single status dropdown in meta field (FR-010a); block invalid and terminal-state changes
 
 **Independent Test**: All allowed transitions succeed; invalid blocked with message (quickstart VS-5)
 
 ### Implementation for User Story 5
 
 - [x] T033 [US5] Implement `UpdateTicketStatusServlet` (`POST .../{ticket-id}/status.status.json`) in `core/src/main/java/com/ttn/ai/core/servlets/UpdateTicketStatusServlet.java`
-- [x] T034 [US5] Add status dropdown/actions to `ticket-detail` HTL (allowed targets from current status only)
+- [x] T034 [US5] Add status dropdown/actions to `ticket-detail` HTL (allowed targets from current status only) — superseded by T041–T042 (FR-010a)
 - [x] T035 [US5] Show user-visible error on `INVALID_STATUS_TRANSITION`; disable changes when `closed` or `cancelled`
 
 **Checkpoint**: Full ticket lifecycle operational
@@ -144,8 +144,75 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - [x] T036 [P] Integration test `SupportTicketServletIT` in `it.tests/src/main/java/com/ttn/ai/it/tests/SupportTicketServletIT.java` (create, list, update, comment, status)
 - [x] T037 Run `mvn clean test -pl core` and fix failures
 - [x] T038 Run `mvn clean install` full build (Java 21)
-- [ ] T039 Execute quickstart.md VS-1 through VS-6 on local AEM SDK
+- [x] T039 Execute quickstart.md VS-1 through VS-6 on local AEM SDK — re-validate VS-5 after T055 (FR-010c no-reload)
 - [x] T040 [P] Verify no PII in servlet logs; CSRF on Author POST endpoints
+
+---
+
+## Phase 9: FR-010a — Unified Status Dropdown (Spec 2026-08-20)
+
+**Purpose**: Replace separate "Change status" section with one status dropdown in meta field (plan.md, research.md §11)
+
+**Independent Test**: quickstart VS-5 — one dropdown in meta area; terminal tickets read-only; allowed transitions work
+
+### Implementation
+
+- [x] T041 [US5] Refactor `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-detail/ticket-detail.html`: status `<select>` in meta area (current + `allowedStatusTargets`); remove "Change status" card; terminal → read-only text
+- [x] T042 [P] [US5] Update `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/clientlibs/clientlib-ticket-detail/js/ticket-detail.js`: bind unified status dropdown to POST `status.status.json`; remove `#ticket-status-form` handler
+- [x] T043 [P] [US5] Style status meta control in `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/clientlibs/clientlib-ticket-material/css/ticket-material.css` (dropdown in meta grid)
+- [x] T044 [US5] Re-run quickstart VS-5 on Author: dropdown-only UX, terminal read-only, invalid transition blocked — superseded by T052 (Phase 11)
+
+**Checkpoint**: FR-010a v1 done — superseded by Phase 10 → Phase 11
+
+---
+
+## Phase 10: FR-010a/b — Status Chip + Material Select (Spec 2026-08-20 b)
+
+**Purpose**: Fix status UX—Material chip for current status; outlined select with one option per allowed target; no merged HTL options (plan.md, research.md §11)
+
+**Independent Test**: quickstart VS-5 — chip + outlined select; each allowed status separate option; terminal read-only
+
+### Implementation
+
+- [x] T045 [US5] Refactor `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-detail/ticket-detail.html`: show current status as `ticket-mui-chip`; add `ticket-mui-field` outlined `<select>` with placeholder only + `data-sly-list` on `<select>` (one `<option>` per `allowedStatusTargets`); remove current status from select options
+- [x] T046 [P] [US5] Update `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/clientlibs/clientlib-ticket-material/css/ticket-material.css`: status select uses `ticket-mui-field` outlined styling (match priority/assignee); remove plain `.ticket-mui-meta__select` if unused
+- [x] T047 [P] [US5] Update `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/clientlibs/clientlib-ticket-detail/js/ticket-detail.js`: skip POST on placeholder/empty value; POST only when user picks allowed next status
+- [x] T048 [US5] Re-run quickstart VS-5 on Author: chip shows current status; select has separate options; MUI styling; terminal read-only; invalid transition blocked — superseded by T052 (Phase 11)
+
+**Checkpoint**: Phase 10 done — superseded by Phase 11 (Jira-style badge menu)
+
+---
+
+## Phase 11: FR-010a/b — Jira-Style Status Badge Menu (Spec 2026-08-21)
+
+**Purpose**: Replace chip + separate select with unified status badge trigger + dropdown menu (plan.md, research.md §11, quickstart VS-5)
+
+**Independent Test**: quickstart VS-5 — colored badge with chevron opens menu; one menu item per allowed target; terminal read-only badge; invalid transition blocked
+
+### Implementation
+
+- [x] T049 [US5] Refactor `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-detail/ticket-detail.html`: unified `#ticket-status-trigger` badge (status label + chevron); `#ticket-status-menu` with `<sly data-sly-list>` one `<button data-status>` per `allowedStatusTargets`; terminal → read-only badge only
+- [x] T050 [P] [US5] Add Jira-style status styles in `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/clientlibs/clientlib-ticket-material/css/ticket-material.css`: `ticket-mui-status-btn` color modifiers, `ticket-mui-status-menu` elevation, chevron rotation on open
+- [x] T051 [P] [US5] Update `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/clientlibs/clientlib-ticket-detail/js/ticket-detail.js`: toggle menu on badge click; menu item POST to `status.status.json`; close on outside click/Esc
+- [x] T052 [US5] Re-run quickstart VS-5 on Author: badge + menu UX; one item per allowed status; terminal read-only; invalid transition blocked
+
+**Checkpoint**: FR-010a/b UI done — extended by Phase 12 (FR-010c async update)
+
+---
+
+## Phase 12: FR-010c — Async Status Update (Spec 2026-08-22)
+
+**Purpose**: Status change without full page reload; Fetch + in-place DOM update (plan.md, research.md §12, quickstart VS-5)
+
+**Independent Test**: quickstart VS-5 steps 5–6 — badge updates in place; no reload; terminal conversion without reload
+
+### Implementation
+
+- [x] T053 [US5] Add HTL anchors in `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-detail/ticket-detail.html`: `#ticket-status-root` (`data-current-status`), `#ticket-last-modified`, `#ticket-terminal-notice` (hidden until terminal)
+- [x] T054 [US5] Update `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/clientlibs/clientlib-ticket-detail/js/ticket-detail.js`: Fetch POST `status.status.json`; remove `window.location.reload()`; `applyStatusToDom()` updates badge, menu targets, `lastModified`, terminal read-only state
+- [x] T055 [US5] Re-run quickstart VS-5 on Author: status saves without page reload; badge/menu update in place; terminal transition shows read-only badge + notice; invalid transition blocked
+
+**Checkpoint**: FR-010a/b/c complete — unified badge menu + async DOM update
 
 ---
 
@@ -161,6 +228,10 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - **US4 (Phase 6)**: Depends on US3 detail page shell
 - **US5 (Phase 7)**: Depends on US3 detail component
 - **Polish (Phase 8)**: Depends on US1–US5
+- **FR-010a (Phase 9)**: Depends on US5 servlet (T033); updates T034 UI only
+- **FR-010a/b (Phase 10)**: Depends on Phase 9; chip + MUI select (superseded)
+- **FR-010a/b (Phase 11)**: Depends on Phase 10; Jira-style badge menu (plan 2026-08-21)
+- **FR-010c (Phase 12)**: Depends on Phase 11; async status DOM update, no reload (plan 2026-08-22)
 
 ### User Story Dependencies
 
@@ -178,6 +249,10 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - **Phase 2**: T008–T012 parallel after T004–T007 started
 - **Per story**: Servlet + component + model tasks marked [P] within same phase
 - **Polish**: T036, T040 parallel
+- **Phase 9**: T042, T043 parallel after T041
+- **Phase 10**: T046, T047 parallel after T045
+- **Phase 11**: T050, T051 parallel after T049
+- **Phase 12**: T054 after T053 (same clientlib; sequential with HTL)
 
 ---
 
@@ -208,7 +283,11 @@ T016 ticket-create clientlib
 4. US3 → edit/reassign
 5. US4 → comments
 6. US5 → status workflow
-7. Polish → IT + full build
+7. **Phase 9 (FR-010a)** → unified status dropdown (done)
+8. **Phase 10** → chip + select (done, superseded)
+9. **Phase 11 (FR-010a/b)** → Jira-style badge menu (done)
+10. **Phase 12 (FR-010c)** → async status, no reload
+11. Polish → IT + full build + T039/T055 validation
 
 ### Suggested MVP Scope
 
@@ -225,3 +304,7 @@ T016 ticket-create clientlib
 - Page paths: `/content/ai-practical-assessment/support-tickets/dashboard`, `create-ticket`, `ticket`
 - UI: Material Design via `clientlib-ticket-material`; ticket components in **AI Capability Project - Content** with `_cq_dialog`
 - Contract reference: `specs/001-support-tickets/contracts/support-ticket-api.md`
+- **FR-010a** (2026-08-20): one status control in detail meta — Phase 9 tasks T041–T043 (done)
+- **FR-010a/b** (2026-08-20 b): chip + outlined MUI select — Phase 10 tasks T045–T047 (done, superseded)
+- **FR-010a/b** (2026-08-21): Jira-style badge trigger + dropdown menu — Phase 11 tasks T049–T052 (done)
+- **FR-010c** (2026-08-22): async Fetch status update, in-place DOM — Phase 12 tasks T053–T055
