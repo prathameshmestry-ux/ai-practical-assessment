@@ -6,5 +6,5 @@
     jcr:primaryType="sling:OrderedFolder"
     jcr:title="AI Capability Project Fragments"
     sling:configRef="/conf/ai-practical-assessment">
-    <us/>
+    <site/>
 </jcr:root>

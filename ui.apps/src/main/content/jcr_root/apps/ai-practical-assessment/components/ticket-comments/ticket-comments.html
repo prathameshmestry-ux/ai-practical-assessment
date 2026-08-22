@@ -1,0 +1,36 @@
+<sly data-sly-use.model="com.ttn.ai.core.models.CommentModel"
+     data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
+<sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-comments']}"/>
+
+<div class="ticket-mui cmp-ticket-comments" data-comments-path="${model.ticketApiCommentsPath}">
+    <h3 class="ticket-mui__title">Comments</h3>
+
+    <div data-sly-test="${model.notFound}" class="ticket-mui-empty">
+        <p>Comments unavailable.</p>
+    </div>
+
+    <div data-sly-test="${!model.notFound}">
+        <div class="ticket-mui-card">
+            <div data-sly-list.comment="${model.comments}" class="cmp-ticket-comments__list">
+                <div class="ticket-mui-comment">
+                    <div class="ticket-mui-comment__header">
+                        <span class="ticket-mui-comment__author">${comment.author}</span>
+                        <span class="ticket-mui-comment__time">${comment.created}</span>
+                    </div>
+                    <p>${comment.text}</p>
+                </div>
+            </div>
+
+            <form id="ticket-comment-form" class="cmp-ticket-comments__form">
+                <div class="ticket-mui-field">
+                    <label for="comment-text">Add comment</label>
+                    <textarea id="comment-text" name="text" required maxlength="4000" placeholder="Write a comment"></textarea>
+                </div>
+                <div class="ticket-mui-actions">
+                    <button type="submit" class="ticket-mui-btn ticket-mui-btn--filled">Post comment</button>
+                </div>
+            </form>
+            <div id="ticket-comment-error" class="ticket-mui-alert ticket-mui-alert--error" hidden></div>
+        </div>
+    </div>
+</div>

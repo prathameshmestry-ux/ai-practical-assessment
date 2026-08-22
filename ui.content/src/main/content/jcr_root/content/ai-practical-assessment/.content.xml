@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:allowedTemplates="[/conf/ai-practical-assessment/settings/wcm/templates/(?!xf-).*]"
         cq:conf="/conf/ai-practical-assessment"
-        cq:redirectTarget="/content/ai-practical-assessment/us/en"
+        cq:redirectTarget="/content/ai-practical-assessment/support-tickets/dashboard"
         cq:template="/conf/ai-practical-assessment/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
         jcr:title="AI Capability Project"
@@ -16,5 +16,6 @@
             <file/>
         </image>
     </jcr:content>
-    <us/>
+    <support-tickets/>
+    <rep:policy/>
 </jcr:root>

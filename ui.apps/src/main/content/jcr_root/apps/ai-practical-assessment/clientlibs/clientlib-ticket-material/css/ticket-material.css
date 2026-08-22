@@ -1,0 +1,370 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined&display=swap");
+
+.material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1.125rem;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    -webkit-font-smoothing: antialiased;
+}
+
+:root {
+    --ticket-primary: #1976d2;
+    --ticket-primary-dark: #1565c0;
+    --ticket-surface: #ffffff;
+    --ticket-surface-variant: #f5f5f5;
+    --ticket-on-surface: #1c1b1f;
+    --ticket-outline: #e0e0e0;
+    --ticket-error: #b3261e;
+    --ticket-success: #2e7d32;
+    --ticket-elevation: 0 2px 6px rgba(0, 0, 0, 0.12);
+    --ticket-radius: 12px;
+}
+
+.ticket-mui {
+    font-family: "Roboto", sans-serif;
+    color: var(--ticket-on-surface);
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.ticket-mui__title {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin: 0 0 1rem;
+}
+
+.ticket-mui__subtitle {
+    font-size: 1rem;
+    color: #5f6368;
+    margin: 0 0 1.5rem;
+}
+
+.ticket-mui-card {
+    background: var(--ticket-surface);
+    border-radius: var(--ticket-radius);
+    box-shadow: var(--ticket-elevation);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.ticket-mui-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+}
+
+.ticket-mui-field label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #49454f;
+}
+
+.ticket-mui-field input,
+.ticket-mui-field textarea,
+.ticket-mui-field select {
+    border: 1px solid var(--ticket-outline);
+    border-radius: 8px;
+    padding: 0.75rem 0.875rem;
+    font: inherit;
+    background: var(--ticket-surface);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ticket-mui-field input:focus,
+.ticket-mui-field textarea:focus,
+.ticket-mui-field select:focus {
+    outline: none;
+    border-color: var(--ticket-primary);
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+}
+
+.ticket-mui-field textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.ticket-mui-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.ticket-mui-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 0.625rem 1.5rem;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.ticket-mui-btn--filled {
+    background: var(--ticket-primary);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.ticket-mui-btn--filled:hover {
+    background: var(--ticket-primary-dark);
+}
+
+.ticket-mui-btn--text {
+    background: transparent;
+    color: var(--ticket-primary);
+}
+
+.ticket-mui-table-wrap {
+    overflow-x: auto;
+}
+
+.ticket-mui-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--ticket-surface);
+    border-radius: var(--ticket-radius);
+    overflow: hidden;
+    box-shadow: var(--ticket-elevation);
+}
+
+.ticket-mui-table th,
+.ticket-mui-table td {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--ticket-outline);
+}
+
+.ticket-mui-table th {
+    background: var(--ticket-surface-variant);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #5f6368;
+}
+
+.ticket-mui-table tbody tr:hover {
+    background: #f8f9ff;
+}
+
+.ticket-mui-table a {
+    color: var(--ticket-primary);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.ticket-mui-chip {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+
+.ticket-mui-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #5f6368;
+    background: var(--ticket-surface-variant);
+    border-radius: var(--ticket-radius);
+}
+
+.ticket-mui-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.ticket-mui-meta__item {
+    background: var(--ticket-surface-variant);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.ticket-mui-meta__label {
+    font-size: 0.75rem;
+    color: #5f6368;
+    margin-bottom: 0.25rem;
+}
+
+.ticket-mui-meta__value {
+    font-weight: 500;
+}
+
+.ticket-mui-status {
+    position: relative;
+    display: inline-block;
+}
+
+.ticket-mui-status-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.ticket-mui-status-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 0.5rem 0.35rem 0.65rem;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    cursor: pointer;
+    line-height: 1.2;
+    transition: box-shadow 0.2s, filter 0.2s;
+}
+
+.ticket-mui-status-btn--readonly {
+    cursor: default;
+}
+
+.ticket-mui-status-btn:not(.ticket-mui-status-btn--readonly):hover,
+.ticket-mui-status-btn--menu-open {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    filter: brightness(0.97);
+}
+
+.ticket-mui-status-btn:focus-visible {
+    outline: 2px solid var(--ticket-primary);
+    outline-offset: 2px;
+}
+
+.ticket-mui-status-btn__chevron {
+    font-size: 1.125rem;
+    line-height: 1;
+    transition: transform 0.2s;
+}
+
+.ticket-mui-status-btn--menu-open .ticket-mui-status-btn__chevron {
+    transform: rotate(180deg);
+}
+
+.ticket-mui-status-btn--open {
+    background: #dfe8fd;
+    color: #1a56db;
+}
+
+.ticket-mui-status-btn--in-progress {
+    background: #fff4e5;
+    color: #b76e00;
+}
+
+.ticket-mui-status-btn--resolved {
+    background: #e6f4ea;
+    color: #137333;
+}
+
+.ticket-mui-status-btn--closed {
+    background: #eceff1;
+    color: #546e7a;
+}
+
+.ticket-mui-status-btn--cancelled {
+    background: #fce8e6;
+    color: #c5221f;
+}
+
+.ticket-mui-status-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 10;
+    min-width: 10rem;
+    margin: 0;
+    padding: 0.35rem 0;
+    list-style: none;
+    background: var(--ticket-surface);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+    border: 1px solid var(--ticket-outline);
+}
+
+.ticket-mui-status-menu__item {
+    display: block;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 0.5rem 0.875rem;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: left;
+    text-transform: capitalize;
+    color: var(--ticket-on-surface);
+    cursor: pointer;
+}
+
+.ticket-mui-status-menu__item:hover,
+.ticket-mui-status-menu__item:focus-visible {
+    background: #f5f7ff;
+    outline: none;
+}
+
+.ticket-mui-comment {
+    border-left: 4px solid var(--ticket-primary);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    background: var(--ticket-surface-variant);
+    border-radius: 0 8px 8px 0;
+}
+
+.ticket-mui-comment__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.35rem;
+}
+
+.ticket-mui-comment__author {
+    font-weight: 500;
+}
+
+.ticket-mui-comment__time {
+    color: #5f6368;
+}
+
+.ticket-mui-alert {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+
+.ticket-mui-alert--success {
+    background: #e8f5e9;
+    color: var(--ticket-success);
+}
+
+.ticket-mui-alert--error {
+    background: #fce8e6;
+    color: var(--ticket-error);
+}
+
+.ticket-mui-terminal {
+    color: #5f6368;
+    font-style: italic;
+}
+
+.ticket-mui-nav {
+    margin-bottom: 1rem;
+}

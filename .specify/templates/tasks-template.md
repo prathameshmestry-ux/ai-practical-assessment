@@ -9,7 +9,9 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: Include test tasks when the feature changes behavior/logic (constitution
+Principle IV). Omit only with an explicit deferred-test rationale in the plan.
+If the spec requests test-first, write failing tests before implementation.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -21,10 +23,13 @@ description: "Task list template for feature implementation"
 
 ## Path Conventions
 
-- **Single project**: `src/`, `tests/` at repository root
-- **Web app**: `backend/src/`, `frontend/src/`
-- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
-- Paths shown below assume single project - adjust based on plan.md structure
+- **AEM CS (this repo)**: `core/`, `ui.apps/`, `ui.frontend/`, `ui.config/`,
+  `ui.content/`, `dispatcher/`, `it.tests/`, `ui.tests/`, `all/`
+- Place Java/OSGi in `core`; HTL/components in `ui.apps`; frontend sources in
+  `ui.frontend`; OSGi configs in `ui.config`; ITs in `it.tests` (`*IT.java`);
+  UI tests in `ui.tests`
+- Paths in sample tasks below are illustrative — replace with real module paths
+  from plan.md (do not invent `src/` at repo root)
 
 <!--
   ============================================================================
@@ -47,11 +52,11 @@ description: "Task list template for feature implementation"
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: Project initialization and basic structure
+**Purpose**: Confirm modules, packages, and tooling for this feature (repo already exists)
 
-- [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T001 Identify target Maven modules per plan Constitution Check
+- [ ] T002 [P] Add/adjust package folders under the correct modules only
+- [ ] T003 [P] Confirm build/test commands (`mvn clean test`, module profiles)
 
 ---
 
@@ -61,14 +66,14 @@ description: "Task list template for feature implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-Examples of foundational tasks (adjust based on your project):
+Examples of foundational tasks (adjust based on your feature):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T004 Create shared Sling Models / OSGi service interfaces in `core`
+- [ ] T005 [P] Add baseline OSGi configs in `ui.config` (no secrets)
+- [ ] T006 [P] Register component structure / dialog scaffolding in `ui.apps`
+- [ ] T007 Wire frontend entry points in `ui.frontend` if clientlibs change
+- [ ] T008 Configure error handling and logging in affected services (no full PII)
+- [ ] T009 [P] Add Dispatcher allow/cache rules only if publish URLs change
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -84,17 +89,17 @@ Examples of foundational tasks (adjust based on your project):
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Unit test for [model/service] in `core/src/test/java/.../[Name]Test.java`
+- [ ] T011 [P] [US1] Integration test for [journey] in `it.tests/src/main/java/.../[Name]IT.java`
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T012 [P] [US1] Create Sling Model in `core/src/main/java/.../models/[Model].java`
+- [ ] T013 [P] [US1] Create OSGi service in `core/src/main/java/.../services/[Service].java`
+- [ ] T014 [US1] Implement HTL/dialog in `ui.apps/.../components/[name]/` (depends on T012)
+- [ ] T015 [US1] Implement frontend/clientlib updates in `ui.frontend/` if needed
 - [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T017 [US1] Add logging for user story 1 operations (no full ticket/PII payloads)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -108,14 +113,14 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T018 [P] [US2] Unit test for [model/service] in `core/src/test/java/.../[Name]Test.java`
+- [ ] T019 [P] [US2] Integration test for [journey] in `it.tests/src/main/java/.../[Name]IT.java`
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T020 [P] [US2] Create Sling Model in `core/src/main/java/.../models/[Model].java`
+- [ ] T021 [US2] Implement OSGi service in `core/src/main/java/.../services/[Service].java`
+- [ ] T022 [US2] Implement HTL/component updates in `ui.apps/.../`
 - [ ] T023 [US2] Integrate with User Story 1 components (if needed)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
@@ -130,14 +135,14 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T024 [P] [US3] Unit test for [model/service] in `core/src/test/java/.../[Name]Test.java`
+- [ ] T025 [P] [US3] UI test for [journey] in `ui.tests/` (if author/publish UX changes)
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T026 [P] [US3] Create Sling Model in `core/src/main/java/.../models/[Model].java`
+- [ ] T027 [US3] Implement OSGi service in `core/src/main/java/.../services/[Service].java`
+- [ ] T028 [US3] Implement HTL/component updates in `ui.apps/.../`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -151,11 +156,11 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
-- [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
+- [ ] TXXX [P] Documentation / quickstart updates under `specs/[###-feature]/`
+- [ ] TXXX Code cleanup within touched modules only (no drive-by refactors)
+- [ ] TXXX [P] Additional unit tests in `core/src/test/java/` (if requested)
+- [ ] TXXX Security review: no secrets, timeouts set, Dispatcher rules reviewed
+- [ ] TXXX Run `mvn clean test` (and Dispatcher validate if `dispatcher/` changed)
 - [ ] TXXX Run quickstart.md validation
 
 ---
@@ -180,9 +185,8 @@ Examples of foundational tasks (adjust based on your project):
 ### Within Each User Story
 
 - Tests (if included) MUST be written and FAIL before implementation
-- Models before services
-- Services before endpoints
-- Core implementation before integration
+- Sling Models / service APIs before HTL and clientlibs
+- `core` before `ui.apps` consumers; `ui.frontend` before clientlib sync expectations
 - Story complete before moving to next priority
 
 ### Parallel Opportunities
@@ -191,7 +195,7 @@ Examples of foundational tasks (adjust based on your project):
 - All Foundational tasks marked [P] can run in parallel (within Phase 2)
 - Once Foundational phase completes, all user stories can start in parallel (if team capacity allows)
 - All tests for a user story marked [P] can run in parallel
-- Models within a story marked [P] can run in parallel
+- Models/services in different packages marked [P] can run in parallel
 - Different user stories can be worked on in parallel by different team members
 
 ---
@@ -200,12 +204,12 @@ Examples of foundational tasks (adjust based on your project):
 
 ```bash
 # Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
+Task: "Unit test for [model/service] in core/src/test/java/.../[Name]Test.java"
+Task: "Integration test for [journey] in it.tests/src/main/java/.../[Name]IT.java"
 
-# Launch all models for User Story 1 together:
-Task: "Create [Entity1] model in src/models/[entity1].py"
-Task: "Create [Entity2] model in src/models/[entity2].py"
+# Launch independent core types together:
+Task: "Create Sling Model in core/src/main/java/.../models/[Model].java"
+Task: "Create OSGi service in core/src/main/java/.../services/[Service].java"
 ```
 
 ---
