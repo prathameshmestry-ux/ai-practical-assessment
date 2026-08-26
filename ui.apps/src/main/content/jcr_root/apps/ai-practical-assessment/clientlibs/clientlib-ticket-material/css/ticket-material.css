@@ -319,6 +319,80 @@
     outline: none;
 }
 
+.ticket-mui-assignee-inline {
+    position: relative;
+}
+
+.ticket-mui-assignee__display {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font: inherit;
+    font-weight: 500;
+    color: var(--ticket-primary);
+    cursor: pointer;
+    text-align: left;
+}
+
+.ticket-mui-assignee__display:hover {
+    text-decoration: underline;
+}
+
+.ticket-mui-assignee__editor {
+    position: relative;
+}
+
+.ticket-mui-assignee__input {
+    width: 100%;
+    border: 1px solid var(--ticket-outline);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    background: var(--ticket-surface);
+}
+
+.ticket-mui-assignee__input:focus {
+    outline: none;
+    border-color: var(--ticket-primary);
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+}
+
+.ticket-mui-assignee__suggestions {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 10;
+    margin: 0;
+    padding: 0.35rem 0;
+    list-style: none;
+    background: var(--ticket-surface);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+    border: 1px solid var(--ticket-outline);
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+.ticket-mui-assignee__suggestion {
+    display: block;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 0.5rem 0.875rem;
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+    color: var(--ticket-on-surface);
+}
+
+.ticket-mui-assignee__suggestion:hover,
+.ticket-mui-assignee__suggestion:focus-visible {
+    background: #f5f7ff;
+    outline: none;
+}
+
 .ticket-mui-comment {
     border-left: 4px solid var(--ticket-primary);
     padding: 0.75rem 1rem;

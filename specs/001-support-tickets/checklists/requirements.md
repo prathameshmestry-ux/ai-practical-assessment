@@ -38,4 +38,7 @@
 - Re-validated 2026-08-20 (b): status UX—current status read-only chip; MUI outlined select; one option per allowed next status (FR-010a/b).
 - Re-validated 2026-08-21: status UX—unified Jira-style status badge trigger + dropdown menu; one menu item per allowed next status (FR-010a/b).
 - Re-validated 2026-08-22: status change—no full page reload; in-place badge update after async save (FR-010c).
+- Re-validated 2026-08-24: inline assignee edit + bulk GET + sessionStorage cache + local filter (FR-007a/b).
+- Re-validated 2026-08-24 (b): assignee source = platform users under `/home/users` via QueryBuilder/UserManager—not `AssigneeConfig` (FR-007a/c).
+- Re-validated 2026-08-24 (c): assignee pool = direct `devs` group members only; exclude nested groups + `/home/users/system` paths (FR-007a/c).
 - Ready for `/speckit-plan` or implementation alignment.

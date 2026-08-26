@@ -1,6 +1,6 @@
 # Research: Support Ticket Management System
 
-**Feature**: 001-support-tickets | **Date**: 2026-08-22 (§12 added)
+**Feature**: 001-support-tickets | **Date**: 2026-08-24 (§13 added)
 
 ## 1. Ticket & Comment Persistence
 
@@ -65,16 +65,19 @@ human-readable prefix aids support debugging.
 
 ## 5. Assignee Source
 
-**Decision**: v1 uses an OSGi configuration list of assignee user IDs (editable in
-`ui.config`) plus optional enrichment from `UserManager` for display names on
-Author/Publish.
+**Decision** (updated 2026-08-24): Assignable users = **direct members** of `devs`
+group via **UserManager** `Group.getMembers()`. Filter: `rep:User` only (skip nested
+groups); exclude paths under `/home/users/system`. `AssignableUserService` replaces
+QueryBuilder `/home/users` scan and static `AssigneeConfig`.
 
-**Rationale**: Spec assumes predefined agent list; avoids external LDAP integration
-in v1 while remaining Cloud Service compatible.
+**Rationale**: Scoped assignee pool to dev team; excludes system accounts and nested
+group indirection.
 
 **Alternatives considered**:
-- **Dynamic group query**: Better UX; deferred—can replace config list later without
-  API contract change.
+- **All `/home/users` QueryBuilder scan**: Rejected—too broad; includes non-dev users.
+- **OSGi static assignee list**: Rejected—operational overhead.
+- **Transitive group membership** (`isMember`): Rejected—spec requires direct
+  `getMembers()` iteration only.
 
 ## 6. Comment Display Order
 
@@ -157,6 +160,20 @@ for ticket field updates.
 - **Full page reload after status POST**: Rejected per FR-010c.
 - **Return `allowedStatusTargets` in status API response**: Deferred—client map sufficient for v1;
   API extension optional later to avoid duplication.
+
+## 13. Inline Assignee UX (FR-007a / FR-007b)
+
+**Decision** (2026-08-24): Ticket detail meta shows inline assignee control. First click
+fetches bulk assignees via `GET .../support-tickets.assignees.json` (`AssigneeUsersServlet`);
+response `data.users[]` with `id` + `displayName`. Client caches in `sessionStorage`.
+Filter on keystroke locally; pick → POST `update.json` with `assignee` only.
+
+**Rationale**: Jira-style inline edit; avoids per-keystroke server search; assignee
+pool from `devs` group direct members via `AssignableUserService`.
+
+**Alternatives considered**:
+- **`<select>` in edit form**: Rejected—inline meta edit per FR-007.
+- **Server-side search endpoint**: Rejected—bulk cache + local filter per spec.
 
 ## 9. Testing Strategy
 

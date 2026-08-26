@@ -11,7 +11,7 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
-import com.ttn.ai.core.config.AssigneeConfig;
+import com.ttn.ai.core.constants.TicketConstants;
 import com.ttn.ai.core.services.TicketNotFoundException;
 import com.ttn.ai.core.services.TicketService;
 import com.ttn.ai.core.services.TicketStatusTransitionValidator;
@@ -32,9 +32,6 @@ public class TicketDetailModel {
 
     @OSGiService
     private TicketStatusTransitionValidator statusValidator;
-
-    @OSGiService
-    private AssigneeConfig assigneeConfig;
 
     private TicketDto ticket;
     private boolean notFound;
@@ -70,7 +67,7 @@ public class TicketDetailModel {
     }
 
     public List<String> getAssignees() {
-        return assigneeConfig != null ? assigneeConfig.getAssignees() : Collections.emptyList();
+        return Collections.emptyList();
     }
 
     public Set<String> getAllowedStatusTargets() {
@@ -90,5 +87,9 @@ public class TicketDetailModel {
 
     public String getTicketApiBasePath() {
         return ticket != null ? ticket.getPath() : "";
+    }
+
+    public String getAssigneesApiPath() {
+        return TicketConstants.TICKET_ROOT_PATH;
     }
 }

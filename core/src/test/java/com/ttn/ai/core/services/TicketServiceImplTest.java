@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.day.cq.search.QueryBuilder;
-import com.ttn.ai.core.config.AssigneeConfig;
 import com.ttn.ai.core.services.dto.TicketDto;
+import com.ttn.ai.core.services.impl.TicketServiceImpl;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
@@ -29,7 +29,6 @@ class TicketServiceImplTest {
                 "jcr:primaryType", "sling:Folder");
         context.registerService(QueryBuilder.class, mock(QueryBuilder.class));
         context.registerInjectActivateService(new TicketStatusTransitionValidator());
-        context.registerInjectActivateService(new AssigneeConfig());
         ticketService = context.registerInjectActivateService(new TicketServiceImpl());
     }
 

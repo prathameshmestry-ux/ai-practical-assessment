@@ -52,7 +52,7 @@ Locale folders (`us/en`) removed. Site content and XF live directly under `/cont
 | `priority` | Enum | Yes | `medium` | One of: `low`, `medium`, `high` |
 | `status` | Enum | Yes | `open` | See state machine below; on detail UI: unified Jira-style status badge (FR-010a/b) |
 | `requester` | String | Yes | session user | Valid AEM user ID |
-| `assignee` | String | No | null | Must be in configured assignee list if set |
+| `assignee` | String | No | null | Direct `devs` group member; individual user; path not under `/home/users/system` |
 | `created` | DateTime | Yes | now | Set on create only |
 | `lastModified` | DateTime | Yes | now | Updated on every mutation |
 
@@ -141,15 +141,17 @@ Exclude `comments/` folder nodes by requiring `ticketId` property (comments use
 
 ## Presentation (ticket-detail)
 
-- **Status (FR-010a/b/c)**: Unified **status badge button** with chevron (non-terminal). Menu lists allowed next statuses only. **Async status save** via `clientlib-ticket-detail` Fetch—updates badge, menu, `lastModified`, and terminal state **without page reload**. Terminal → read-only colored badge.
-- **Other fields**: Title, description, priority, assignee in edit form (unchanged).
+- **Status (FR-010a/b/c)**: Unified status badge + async DOM update (see above).
+- **Assignee (FR-007a/b/c)**: Inline meta edit—read-only display → input + local-filtered suggestions; bulk GET of `devs` direct members cached in `sessionStorage`; save via `update.json` without page reload; server validates group membership + non-system path.
+- **Other fields**: Title, description, priority in edit form (assignee not in form).
 
 ## OSGi Configuration
 
 | PID | Purpose |
 |-----|---------|
 | `com.ttn.ai.core.services.impl.TicketServiceImpl` | `ticketRootPath`, `defaultPageSize`, `maxPageSize` |
-| `com.ttn.ai.core.config.AssigneeConfig` | `assignees[]` — list of allowed assignee user IDs |
+
+**Service user ACL** (`repoinit`): `ticket-service` read on `/home/users` and `/home/groups` for assignee resolution.
 
 ## Service User
 

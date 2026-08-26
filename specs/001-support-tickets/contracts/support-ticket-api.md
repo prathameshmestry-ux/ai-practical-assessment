@@ -233,6 +233,36 @@ Cannot update `status` via this endpoint (use status endpoint).
 
 ---
 
+### 6. List Assignable Users
+
+| | |
+|---|---|
+| **Method** | `GET` |
+| **Path** | `/content/ai-practical-assessment/support-tickets.assignees.json` |
+| **Servlet** | `AssigneeUsersServlet` |
+| **Story** | US3 / FR-007a |
+
+No query/search parameters. Returns direct members of `devs` group—individual users only; excludes `/home/users/system` paths (FR-007a).
+
+**Response** `200 OK`:
+
+```json
+{
+  "success": true,
+  "data": {
+    "users": [
+      { "id": "admin", "displayName": "Admin" },
+      { "id": "support-agent-1", "displayName": "support-agent-1" }
+    ]
+  },
+  "error": null
+}
+```
+
+Client caches `users` in `sessionStorage` on first assignee edit; filters locally while typing (FR-007b).
+
+---
+
 ## Error Codes
 
 | Code | HTTP | Description |
@@ -249,7 +279,7 @@ Cannot update `status` via this endpoint (use status endpoint).
 |-----------|------|-------|
 | `ticket-create` | — | POST Create Ticket |
 | `ticket-dashboard` | GET List (or Sling Model) | — |
-| `ticket-detail` | GET Detail + Sling Model | POST Update (fields), POST Status (Jira-style badge menu → Fetch + in-place DOM update, FR-010c) |
+| `ticket-detail` | GET Detail + Sling Model; GET Assignees | POST Update (fields + assignee), POST Status (FR-010c) |
 | `ticket-comments` | GET Detail comments[] | POST Add Comment |
 
 Detail page URL: `/content/ai-practical-assessment/support-tickets/ticket.html?ticketId={ticket-id}`

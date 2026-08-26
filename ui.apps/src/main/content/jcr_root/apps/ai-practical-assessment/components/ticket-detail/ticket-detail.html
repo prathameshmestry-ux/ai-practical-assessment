@@ -2,7 +2,9 @@
      data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
 <sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-detail']}"/>
 
-<div class="ticket-mui cmp-ticket-detail" data-ticket-path="${model.ticketApiBasePath}">
+<div class="ticket-mui cmp-ticket-detail"
+     data-ticket-path="${model.ticketApiBasePath}"
+     data-assignees-url="${model.assigneesApiPath}">
     <div class="ticket-mui-nav">
         <a class="ticket-mui-btn ticket-mui-btn--text" href="/content/ai-practical-assessment/support-tickets/dashboard.html">Back to dashboard</a>
     </div>
@@ -52,6 +54,24 @@
                 <div class="ticket-mui-meta__value">${model.ticket.requester}</div>
             </div>
             <div class="ticket-mui-meta__item">
+                <div class="ticket-mui-meta__label">Assignee</div>
+                <div id="ticket-assignee-root" class="ticket-mui-assignee-inline" data-current-assignee="${model.ticket.assignee}">
+                    <button type="button"
+                            id="ticket-assignee-display"
+                            class="ticket-mui-meta__value ticket-mui-assignee__display">
+                        ${model.ticket.assignee ? model.ticket.assignee : 'Unassigned'}
+                    </button>
+                    <div id="ticket-assignee-editor" class="ticket-mui-assignee__editor" hidden>
+                        <input type="text"
+                               id="ticket-assignee-input"
+                               class="ticket-mui-assignee__input"
+                               autocomplete="off"
+                               placeholder="Search assignee"/>
+                        <ul id="ticket-assignee-suggestions" class="ticket-mui-assignee__suggestions" role="listbox" hidden></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="ticket-mui-meta__item">
                 <div class="ticket-mui-meta__label">Created</div>
                 <div class="ticket-mui-meta__value">${model.ticket.created}</div>
             </div>
@@ -80,18 +100,6 @@
                         <option value="low" data-sly-attribute.selected="${model.ticket.priority == 'low'}">Low</option>
                         <option value="medium" data-sly-attribute.selected="${model.ticket.priority == 'medium'}">Medium</option>
                         <option value="high" data-sly-attribute.selected="${model.ticket.priority == 'high'}">High</option>
-                    </select>
-                </div>
-
-                <div class="ticket-mui-field">
-                    <label>Assignee</label>
-                    <select name="assignee">
-                        <option value="">Unassigned</option>
-                        <option data-sly-list.assignee="${model.assignees}"
-                                value="${assignee}"
-                                data-sly-attribute.selected="${model.ticket.assignee == assignee}">
-                            ${assignee}
-                        </option>
                     </select>
                 </div>
 
