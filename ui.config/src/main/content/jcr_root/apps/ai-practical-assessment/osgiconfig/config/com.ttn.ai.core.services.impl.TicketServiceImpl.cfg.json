@@ -1,5 +1,5 @@
 {
-  "ticketRootPath": "/content/ai-practical-assessment/support-tickets",
+  "ticketRootPath": "/var/ai-practical-assessment/tickets",
   "defaultPageSize": 25,
   "maxPageSize": 100
 }

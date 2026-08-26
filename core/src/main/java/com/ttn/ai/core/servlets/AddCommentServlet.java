@@ -23,7 +23,7 @@ import com.ttn.ai.core.services.TicketValidationException;
 import com.ttn.ai.core.services.dto.CommentDto;
 
 /**
- * Adds a comment (POST .../{ticket-id}/comments.comment.json).
+ * Adds a comment (POST .../tickets/{ticket-id}/comments.comment.json).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(

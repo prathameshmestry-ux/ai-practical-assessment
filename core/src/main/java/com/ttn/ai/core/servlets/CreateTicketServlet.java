@@ -21,7 +21,7 @@ import com.ttn.ai.core.services.TicketValidationException;
 import com.ttn.ai.core.services.dto.TicketDto;
 
 /**
- * Creates support tickets (POST .../support-tickets.ticket.json).
+ * Creates support tickets (POST .../tickets.ticket.json under ticket data root).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(

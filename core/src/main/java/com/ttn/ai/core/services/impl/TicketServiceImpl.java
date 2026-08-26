@@ -311,17 +311,24 @@ public class TicketServiceImpl implements TicketService {
 
     private Resource ensureTicketRoot(ResourceResolver resolver) throws PersistenceException {
         Resource root = resolver.getResource(ticketRootPath);
-        if (root == null) {
-            Resource parent = resolver.getResource("/content/ai-practical-assessment");
-            if (parent == null) {
-                throw new PersistenceException("Parent content path missing");
-            }
-            Map<String, Object> props = new HashMap<>();
-            props.put("jcr:primaryType", "nt:unstructured");
-            props.put("sling:resourceType", RT_TICKETS_ROOT);
-            root = resolver.create(parent, "support-tickets", props);
-            resolver.commit();
+        if (root != null) {
+            return root;
         }
+        Resource varFolder = resolver.getResource("/var");
+        if (varFolder == null) {
+            varFolder = resolver.create(resolver.getResource("/"), "var",
+                    Map.of("jcr:primaryType", "sling:Folder"));
+        }
+        Resource appFolder = resolver.getResource(ticketRootPath.substring(0, ticketRootPath.lastIndexOf('/')));
+        if (appFolder == null) {
+            appFolder = resolver.create(varFolder, "ai-practical-assessment",
+                    Map.of("jcr:primaryType", "sling:Folder"));
+        }
+        Map<String, Object> props = new HashMap<>();
+        props.put("jcr:primaryType", "sling:Folder");
+        props.put("sling:resourceType", RT_TICKETS_ROOT);
+        root = resolver.create(appFolder, "tickets", props);
+        resolver.commit();
         return root;
     }
 

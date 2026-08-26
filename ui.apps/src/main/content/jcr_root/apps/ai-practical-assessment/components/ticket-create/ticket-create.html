@@ -1,7 +1,7 @@
 <sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
 <sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-create']}"/>
 
-<div class="ticket-mui cmp-ticket-create" data-cmp-is="ticket-create">
+<div class="ticket-mui cmp-ticket-create" data-cmp-is="ticket-create" data-tickets-api-url="/var/ai-practical-assessment/tickets">
     <h2 class="ticket-mui__title">Create Support Ticket</h2>
     <p class="ticket-mui__subtitle">Submit issue for tracking and resolution.</p>
 

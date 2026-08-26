@@ -8,4 +8,5 @@
     </filter>
     <filter root="/content/dam/ai-practical-assessment/asset.jpg" mode="merge"/>
     <filter root="/content/experience-fragments/ai-practical-assessment" mode="merge"/>
+    <filter root="/var/ai-practical-assessment" mode="merge"/>
 </workspaceFilter>

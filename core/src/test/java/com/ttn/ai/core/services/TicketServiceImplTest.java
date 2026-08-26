@@ -25,7 +25,7 @@ class TicketServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        context.create().resource("/content/ai-practical-assessment",
+        context.create().resource("/var/ai-practical-assessment",
                 "jcr:primaryType", "sling:Folder");
         context.registerService(QueryBuilder.class, mock(QueryBuilder.class));
         context.registerInjectActivateService(new TicketStatusTransitionValidator());

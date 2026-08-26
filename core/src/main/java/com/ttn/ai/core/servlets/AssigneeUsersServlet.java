@@ -22,7 +22,7 @@ import com.ttn.ai.core.services.AssignableUserService;
 import com.ttn.ai.core.services.dto.AssignableUserDto;
 
 /**
- * Returns bulk list of assignable AEM users under /home/users (GET .../support-tickets.assignees.json).
+ * Returns bulk list of assignable AEM users under /home/users (GET .../tickets.assignees.json).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(

@@ -12,7 +12,6 @@
 
 ### Session 2026-08-12
 
-- Q: Where are tickets and comments stored in the repository? → A: Tickets at `/content/ai-practical-assessment/support-tickets/{ticket-id}`; comments at `/content/ai-practical-assessment/support-tickets/{ticket-id}/comments/{comment-id}`.
 - Q: How are comments linked to their ticket? → A: Parent-child JCR structure—each comment is a child node under its ticket's `comments` folder; the ticket node path is the sole linkage (no separate reference property).
 
 ### Session 2026-08-14
@@ -53,6 +52,18 @@
 
 - Q: Which users are assignable? → A: **Direct members** of platform user group **`devs`** only—individual user accounts, not nested groups. **System/service accounts** under `/home/users/system` excluded.
 - Q: What makes assignee valid on save? → A: Same filter—user must be direct `devs` member, individual account, not under `/home/users/system`.
+
+### Session 2026-08-26 (data persistence paths)
+
+- Q: Where are tickets and comments stored in the repository? → A: **Updated** — tickets at `/var/ai-practical-assessment/tickets/{ticket-id}`; comments at `/var/ai-practical-assessment/tickets/{ticket-id}/comments/{comment-id}`.
+- Q: Do UI pages move? → A: **No** — support pages stay under `/content/ai-practical-assessment/support-tickets/{dashboard|create-ticket|ticket}`; only ticket **data** moves to `/var/ai-practical-assessment/tickets`.
+- Q: How must create/comment requests target storage? → A: Ticket creation POST and comment GET/POST MUST use the new `/var/ai-practical-assessment/tickets` base path; ticket-detail and ticket-create ClientLib fetch URLs MUST align with the new ticket resource paths.
+
+### Session 2026-08-26 (var folder structure & clientlibs)
+
+- Q: How is `/var/ai-practical-assessment/tickets` provisioned? → A: **`ui.content` package** ships `sling:Folder` nodes for `/var/ai-practical-assessment` and `/var/ai-practical-assessment/tickets`; tickets folder also sets `tickets-root` resource type for JSON servlet binding.
+- Q: How does `ticket-service` access `/var` data? → A: **`rep:policy` on `/var/ai-practical-assessment`** in `ui.content` grants read/write on the hierarchy (same privileges as content-path policy).
+- Q: Must ClientLibs be proxyable on publish? → A: **Yes** — all project ClientLib folders MUST set `allowProxy=true` (base, grid, material, and all ticket ClientLibs).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -181,8 +192,15 @@ As a support agent, I want to change a ticket's status through allowed transitio
 - **FR-012**: System MUST treat **Closed** and **Cancelled** as terminal states where further status changes are not permitted.
 - **FR-013**: System MUST persist all tickets and comments so they survive session end and are available on subsequent visits.
 - **FR-014**: System MUST provide navigation from dashboard to detail view and a path back to the dashboard.
-- **FR-015**: System MUST create each new ticket at repository path `/content/ai-practical-assessment/support-tickets/{ticket-id}`, where `{ticket-id}` is a unique identifier for that ticket.
-- **FR-016**: System MUST create each new comment at repository path `/content/ai-practical-assessment/support-tickets/{ticket-id}/comments/{comment-id}`, where `{comment-id}` is a unique identifier within that ticket.
+- **FR-015**: System MUST create each new ticket at repository path `/var/ai-practical-assessment/tickets/{ticket-id}`, where `{ticket-id}` is a unique identifier for that ticket.
+- **FR-016**: System MUST create each new comment at repository path `/var/ai-practical-assessment/tickets/{ticket-id}/comments/{comment-id}`, where `{comment-id}` is a unique identifier within that ticket.
+- **FR-018**: System MUST read and list tickets from `/var/ai-practical-assessment/tickets`; dashboard, detail, update, and status operations MUST resolve ticket nodes under this root.
+- **FR-019**: System MUST read comments exclusively from `/var/ai-practical-assessment/tickets/{ticket-id}/comments` for the requested ticket.
+- **FR-020**: Ticket creation entry point and ticket-create ClientLib submission MUST target the new ticket storage root at `/var/ai-practical-assessment/tickets`.
+- **FR-021**: Comment create/list entry points and ticket-comments ClientLib fetch MUST target the ticket's comment endpoint under `/var/ai-practical-assessment/tickets/{ticket-id}`.
+- **FR-022**: Deployable content MUST include `sling:Folder` nodes at `/var/ai-practical-assessment` and `/var/ai-practical-assessment/tickets`; the tickets folder MUST expose the tickets-root resource type for list/create/assignee JSON endpoints.
+- **FR-023**: `ticket-service` MUST have read/write access to the `/var/ai-practical-assessment` hierarchy via repository access control shipped in the mutable content package.
+- **FR-024**: Every project ClientLib folder MUST enable proxy delivery (`allowProxy`) so scripts and styles load correctly on publish.
 - **FR-017**: System MUST link each comment to exactly one ticket via parent-child repository structure; comments MUST NOT be stored outside their ticket's `comments` folder or require a separate cross-reference property to locate the parent ticket.
 
 ### Non-Functional Requirements *(constitution-aligned)*
@@ -194,8 +212,8 @@ As a support agent, I want to change a ticket's status through allowed transitio
 
 ### Key Entities
 
-- **Ticket**: A support request record stored at `/content/ai-practical-assessment/support-tickets/{ticket-id}`. Key attributes: unique identifier (`{ticket-id}`), title, description, priority (e.g., Low/Medium/High), status (Open, In Progress, Resolved, Closed, Cancelled), requester, assignee (optional until assigned), created timestamp, last-updated timestamp. Parent of zero or more comment child nodes.
-- **Comment**: A user-authored note stored at `/content/ai-practical-assessment/support-tickets/{ticket-id}/comments/{comment-id}`. Key attributes: unique identifier (`{comment-id}`), comment text, author, timestamp. Belongs to exactly one ticket via parent-child repository structure under that ticket's `comments` folder.
+- **Ticket**: A support request record stored at `/var/ai-practical-assessment/tickets/{ticket-id}`. Key attributes: unique identifier (`{ticket-id}`), title, description, priority (e.g., Low/Medium/High), status (Open, In Progress, Resolved, Closed, Cancelled), requester, assignee (optional until assigned), created timestamp, last-updated timestamp. Parent of zero or more comment child nodes.
+- **Comment**: A user-authored note stored at `/var/ai-practical-assessment/tickets/{ticket-id}/comments/{comment-id}`. Key attributes: unique identifier (`{comment-id}`), comment text, author, timestamp. Belongs to exactly one ticket via parent-child repository structure under that ticket's `comments` folder.
 - **User**: An authenticated person who can create tickets, view the dashboard, update tickets, reassign, comment, and change status (role nuances may be refined in planning; v1 assumes all authenticated users can perform agent actions unless restricted later).
 
 ## Success Criteria *(mandatory)*
@@ -212,7 +230,7 @@ As a support agent, I want to change a ticket's status through allowed transitio
 ## Assumptions
 
 - Users are authenticated before accessing ticket features; standard platform login applies.
-- Tickets are stored at `/content/ai-practical-assessment/support-tickets/{ticket-id}`; comments are child nodes at `.../comments/{comment-id}`. The dashboard queries ticket nodes under the support-tickets folder; the detail view loads a ticket node and its `comments` child nodes.
+- Tickets are stored at `/var/ai-practical-assessment/tickets/{ticket-id}`; comments are child nodes at `.../comments/{comment-id}`. The dashboard queries ticket nodes under `/var/ai-practical-assessment/tickets`; the detail view loads a ticket node and its `comments` child nodes. Support UI pages remain under `/content/ai-practical-assessment/support-tickets/`.
 - v1 includes a single support queue (no multi-department or multi-project ticket pools).
 - Assignee is selected from direct members of platform user group **`devs`**—individual user accounts only; system/service accounts under `/home/users/system` excluded.
 - Priority values are a fixed set: Low, Medium, High (default Medium if not specified on create).

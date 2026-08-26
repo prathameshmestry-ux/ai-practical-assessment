@@ -19,7 +19,7 @@ import com.ttn.ai.core.services.TicketService;
 import com.ttn.ai.core.services.dto.TicketListResult;
 
 /**
- * Lists support tickets (GET .../support-tickets.list.json).
+ * Lists support tickets (GET .../tickets.list.json under ticket data root).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(

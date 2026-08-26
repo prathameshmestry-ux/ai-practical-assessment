@@ -49,6 +49,9 @@
                         <!-- DAM folder root, will be created via repoinit -->
                         <filter><root>/content/dam/ai-practical-assessment</root></filter>
 
+                        <!-- Ticket data root under /var -->
+                        <filter><root>/var/ai-practical-assessment</root></filter>
+
                     </filters>
                 </configuration>
             </plugin>

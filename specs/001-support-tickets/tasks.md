@@ -52,7 +52,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 
 ## Phase 3: User Story 1 - Create Support Ticket (Priority: P1) 🎯 MVP
 
-**Goal**: Authenticated user submits ticket; persisted at `/content/ai-practical-assessment/support-tickets/{ticket-id}` with status `open`
+**Goal**: Authenticated user submits ticket; persisted at `/var/ai-practical-assessment/tickets/{ticket-id}` with status `open`
 
 **Independent Test**: Submit create form → ticket node exists with title, description, priority, requester, timestamps (quickstart VS-1)
 
@@ -216,6 +216,67 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 
 ---
 
+## Phase 13: Data Persistence Path Migration (Spec 2026-08-26)
+
+**Purpose**: Move ticket/comment data from `/content/.../support-tickets` to `/var/ai-practical-assessment/tickets`; align servlets, OSGi, repoinit, ClientLibs, and tests (FR-015–FR-021)
+
+**Independent Test**: Create ticket → node under `/var/ai-practical-assessment/tickets/{id}`; post comment → node under `.../comments/{comment-id}`; dashboard lists new tickets; no new data nodes under old content path
+
+### Backend & config
+
+- [x] T056 Update `TicketConstants.TICKET_ROOT_PATH` to `/var/ai-practical-assessment/tickets` in `core/src/main/java/com/ttn/ai/core/constants/TicketConstants.java`
+- [x] T057 Update `TicketServiceImpl` create/list/get/update/status/comment methods to resolve tickets under `/var/ai-practical-assessment/tickets` in `core/src/main/java/com/ttn/ai/core/services/impl/TicketServiceImpl.java`
+- [x] T058 [P] Update `TicketServiceImpl.cfg.json` `ticketRootPath` to `/var/ai-practical-assessment/tickets` in `ui.config/.../com.ttn.ai.core.services.impl.TicketServiceImpl.cfg.json`
+- [x] T059 [P] Update repoinit: create `/var/ai-practical-assessment/tickets` + service-user ACLs; remove content-path ticket data root init in `ui.config/.../org.apache.sling.jcr.repoinit.RepositoryInitializer~ai-practical-assessment.cfg.json`
+- [x] T060 [P] Update service user `rep:policy` ACL for `/var/ai-practical-assessment/tickets` in `ui.content` (replace or add alongside content ACL per data-model.md)
+
+### Servlets
+
+- [x] T061 Update `CreateTicketServlet` resource type/path binding to `/var/ai-practical-assessment/tickets` in `core/src/main/java/com/ttn/ai/core/servlets/CreateTicketServlet.java`
+- [x] T062 [P] Update `TicketListServlet` query root to `/var/ai-practical-assessment/tickets` in `core/src/main/java/com/ttn/ai/core/servlets/TicketListServlet.java`
+- [x] T063 [P] Update `UpdateTicketServlet`, `UpdateTicketStatusServlet`, `AssigneeUsersServlet` ticket path resolution in `core/src/main/java/com/ttn/ai/core/servlets/`
+- [x] T064 Update `AddCommentServlet` to read/write comments at `/var/ai-practical-assessment/tickets/{ticket-id}/comments` in `core/src/main/java/com/ttn/ai/core/servlets/AddCommentServlet.java`
+
+### Models & HTL
+
+- [x] T065 Update `TicketDetailModel`, `TicketListModel`, `CommentModel` API paths (`data-ticket-path`, list URL, comment URL) to `/var/ai-practical-assessment/tickets` in `core/src/main/java/com/ttn/ai/core/models/`
+- [x] T066 [P] Update `ticket-detail.html` and `ticket-comments` HTL `data-*` attributes to expose new ticket/comment resource paths in `ui.apps/.../components/`
+
+### ClientLibs
+
+- [x] T067 Update `clientlib-ticket-create/js/ticket-create.js` fetch to `POST /var/ai-practical-assessment/tickets.ticket.json`
+- [x] T068 [P] Update `clientlib-ticket-detail/js/ticket-detail.js` status/update/assignee fetch URLs to use `/var/ai-practical-assessment/tickets/{ticket-id}` from HTL `data-ticket-path`
+- [x] T069 [P] Update `clientlib-ticket-comments` (or ticket-comments component JS) comment submit fetch to `/var/ai-practical-assessment/tickets/{ticket-id}/comments.comment.json`
+
+### Tests & validation
+
+- [x] T070 [P] Update `TicketServiceImplTest` fixture paths to `/var/ai-practical-assessment/tickets` in `core/src/test/java/com/ttn/ai/core/services/TicketServiceImplTest.java`
+- [x] T071 Update `SupportTicketServletIT` `TICKETS_ROOT` and comment paths in `it.tests/src/main/java/com/ttn/ai/it/tests/SupportTicketServletIT.java`
+- [x] T072 Re-run `mvn clean test -pl core,it.tests` and quickstart VS-1 through VS-4 against new paths
+
+**Checkpoint**: All ticket/comment persistence and ClientLib fetch calls use `/var/ai-practical-assessment/tickets`
+
+---
+
+## Phase 14: Var Folder Structure, ACL & ClientLib Proxy (Spec 2026-08-26 b)
+
+**Purpose**: Ship `/var/ai-practical-assessment/tickets` as `sling:Folder` in `ui.content`; `rep:policy` for `ticket-service`; `allowProxy` on all ClientLibs (FR-022–FR-024)
+
+**Independent Test**: After deploy, CRXDE shows `sling:Folder` at `/var/ai-practical-assessment` and `.../tickets` with tickets-root RT; ticket create succeeds; ClientLib URLs use `/etc.clientlibs/...` on publish
+
+### Implementation
+
+- [x] T073 Add `sling:Folder` content nodes at `ui.content/.../var/ai-practical-assessment/.content.xml` and `.../tickets/.content.xml` (tickets-root RT on tickets folder)
+- [x] T074 [P] Add `_rep_policy.xml` for `ticket-service` on `/var/ai-practical-assessment` in `ui.content/.../var/ai-practical-assessment/_rep_policy.xml`
+- [x] T075 [P] Add `/var/ai-practical-assessment` to `ui.content/.../vault/filter.xml` and `ui.apps.structure/pom.xml` filters
+- [x] T076 Remove duplicate `/var` path creation from repoinit (folders now in `ui.content`)
+- [x] T077 [P] Set `allowProxy="{Boolean}true"` on all ticket ClientLibs (`clientlib-ticket-create`, `-detail`, `-dashboard`, `-comments`); verify base/grid/material already proxied
+- [x] T078 Update `TicketServiceImpl.ensureTicketRoot()` to create `sling:Folder` nodes when bootstrapping in tests
+
+**Checkpoint**: Var hierarchy + ACL in content package; all ClientLibs proxy-enabled
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -232,6 +293,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - **FR-010a/b (Phase 10)**: Depends on Phase 9; chip + MUI select (superseded)
 - **FR-010a/b (Phase 11)**: Depends on Phase 10; Jira-style badge menu (plan 2026-08-21)
 - **FR-010c (Phase 12)**: Depends on Phase 11; async status DOM update, no reload (plan 2026-08-22)
+- **Path migration (Phase 13)**: Depends on US1–US4 servlets + ClientLibs; storage root → `/var/ai-practical-assessment/tickets` (spec 2026-08-26)
 
 ### User Story Dependencies
 
@@ -300,7 +362,7 @@ T016 ticket-create clientlib
 - Use Adobe `create-component` skill for HTL components (constitution VI)
 - All Java targets Java 21 / `JavaSE-21` (constitution v1.0.2)
 - Bounded queries: `p.limit` max 100 on list (data-model.md)
-- Ticket paths: `/content/ai-practical-assessment/support-tickets/{ticket-id}/comments/{comment-id}`
+- Ticket data paths: `/var/ai-practical-assessment/tickets/{ticket-id}/comments/{comment-id}`
 - Page paths: `/content/ai-practical-assessment/support-tickets/dashboard`, `create-ticket`, `ticket`
 - UI: Material Design via `clientlib-ticket-material`; ticket components in **AI Capability Project - Content** with `_cq_dialog`
 - Contract reference: `specs/001-support-tickets/contracts/support-ticket-api.md`
@@ -308,3 +370,5 @@ T016 ticket-create clientlib
 - **FR-010a/b** (2026-08-20 b): chip + outlined MUI select — Phase 10 tasks T045–T047 (done, superseded)
 - **FR-010a/b** (2026-08-21): Jira-style badge trigger + dropdown menu — Phase 11 tasks T049–T052 (done)
 - **FR-010c** (2026-08-22): async Fetch status update, in-place DOM — Phase 12 tasks T053–T055
+- **FR-015–FR-021** (2026-08-26): ticket/comment data under `/var/ai-practical-assessment/tickets` — Phase 13 tasks T056–T072
+- **FR-022–FR-024** (2026-08-26 b): var `sling:Folder` in ui.content, rep:policy, ClientLib allowProxy — Phase 14 tasks T073–T078

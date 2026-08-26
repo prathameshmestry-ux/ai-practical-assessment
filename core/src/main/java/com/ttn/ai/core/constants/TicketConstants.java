@@ -5,7 +5,8 @@ package com.ttn.ai.core.constants;
  */
 public final class TicketConstants {
 
-    public static final String TICKET_ROOT_PATH = "/content/ai-practical-assessment/support-tickets";
+    public static final String TICKET_VAR_BASE_PATH = "/var/ai-practical-assessment";
+    public static final String TICKET_ROOT_PATH = "/var/ai-practical-assessment/tickets";
     public static final String HOME_USERS_PATH = "/home/users";
     public static final String HOME_USERS_SYSTEM_PATH = "/home/users/system";
     public static final String ASSIGNEE_GROUP_ID = "devs";

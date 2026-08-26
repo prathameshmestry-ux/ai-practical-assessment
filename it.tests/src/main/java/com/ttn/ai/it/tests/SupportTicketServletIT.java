@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class SupportTicketServletIT {
 
-    private static final String TICKETS_ROOT = "/content/ai-practical-assessment/support-tickets";
+    private static final String TICKETS_ROOT = "/var/ai-practical-assessment/tickets";
 
     @ClassRule
     public static final CQAuthorPublishClassRule cqBaseClassRule = new CQAuthorPublishClassRule();

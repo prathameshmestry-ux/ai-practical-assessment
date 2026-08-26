@@ -1,6 +1,6 @@
 # Implementation Plan: Support Ticket Management System
 
-**Branch**: `001-support-tickets` | **Date**: 2026-08-24 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-support-tickets` | **Date**: 2026-08-26 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/001-support-tickets/spec.md`
 
@@ -12,8 +12,9 @@ reassign, add comments, and transition status through a enforced workflow. Ticke
 shows **unified Jira-style status badge** (current status = dropdown trigger with chevron;
 menu lists allowed next statuses only) per FR-010a/b. Status changes use **async Fetch** in
 `clientlib-ticket-detail` with **in-place DOM update**—no full page reload (FR-010c). Tickets
-persist as JCR nodes at `/content/ai-practical-assessment/support-tickets/{ticket-id}`;
-comments are child nodes at `.../comments/{comment-id}`.
+persist as JCR nodes at `/var/ai-practical-assessment/tickets/{ticket-id}`;
+comments are child nodes at `.../comments/{comment-id}`. Support **UI pages** remain under
+`/content/ai-practical-assessment/support-tickets/` (dashboard, create-ticket, ticket detail).
 
 **Technical approach**: OSGi services and Sling Models in `core` own ticket/comment
 persistence and business rules; four HTL components in `ui.apps` provide create,
@@ -26,7 +27,7 @@ operations; sample pages and folder structure ship in `ui.content`.
 
 **Primary Dependencies**: AEM SDK API (`aem-sdk-api`), Sling Models, OSGi R7 annotations, Apache Sling Query/QueryBuilder, Jackson (if already in project; otherwise manual JSON in servlets)
 
-**Storage**: JCR content nodes under `/content/ai-practical-assessment/support-tickets/` (tickets) with `comments/` child folders (comments)
+**Storage**: JCR data nodes under `/var/ai-practical-assessment/tickets/` (tickets) with `comments/` child folders (comments). UI pages under `/content/ai-practical-assessment/support-tickets/` unchanged.
 
 **Testing**: JUnit + AEM Mocks (`core`), AEM Testing Clients (`it.tests`), Cypress (`ui.tests` for primary journeys)
 
@@ -36,7 +37,7 @@ operations; sample pages and folder structure ship in `ui.content`.
 
 **Performance Goals**: Dashboard lists up to 100 tickets within 3 seconds (SC-002); bounded QueryBuilder queries with `p.limit` pagination (default page size 25)
 
-**Constraints**: AEMaaCS-compatible APIs only; no secrets in packages; bounded queries; no full PII in logs; service-user writes to ticket content path; CSRF token on POST servlets
+**Constraints**: AEMaaCS-compatible APIs only; no secrets in packages; bounded queries; no full PII in logs; service-user writes to `/var/ai-practical-assessment/tickets`; CSRF token on POST servlets
 
 **Scale/Scope**: 4 custom components, 1 OSGi service layer (~5 classes), 4–5 servlets, 3 AEM pages, unit + integration tests; no new Maven modules
 
@@ -104,10 +105,12 @@ ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/
 └── ticket-comments/
 
 ui.config/src/main/content/jcr_root/apps/ai-practical-assessment/osgiconfig/config/
-└── org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-ai-practical-assessment.cfg.json
+├── org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-ai-practical-assessment.cfg.json
+├── com.ttn.ai.core.services.impl.TicketServiceImpl.cfg.json   # ticketRootPath → /var/ai-practical-assessment/tickets
+└── org.apache.sling.jcr.repoinit.RepositoryInitializer~ai-practical-assessment.cfg.json   # create /var path + ACLs
 
 ui.content/src/main/content/jcr_root/content/ai-practical-assessment/
-└── support-tickets/                    # tickets-root (API + data)
+└── support-tickets/                    # UI pages only (no ticket data nodes)
     ├── dashboard/                      # ticket-dashboard
     ├── create-ticket/                  # ticket-create
     └── ticket/                         # ticket-detail + ticket-comments
@@ -122,8 +125,8 @@ ui.tests/                               # optional Cypress journeys
 **Structure Decision**: Business logic and JCR access stay in `core` (constitution II).
 Each user-facing concern is a separate AEM component (NFR-004 / spec assumption).
 Write operations use dedicated servlets (JSON) invoked from component clientlibs or
-form POST with redirect. Ticket **data** lives under `support-tickets/`; **pages**
-live under `support-tickets/` as sibling pages to ticket data nodes.
+form POST with redirect. Ticket **data** lives under `/var/ai-practical-assessment/tickets/`; **pages**
+live under `/content/ai-practical-assessment/support-tickets/`.
 
 ## Component & Page Map
 
@@ -162,6 +165,33 @@ Detail page reads `ticketId` from query parameter (`?ticketId={ticket-id}`).
 **Servlet**: `AssigneeUsersServlet` — bulk list from `AssignableUserService` (`devs` group direct members; UserManager `Group.getMembers()`).
 
 **HTL**: `data-assignees-url` on `.cmp-ticket-detail` from `TicketDetailModel.assigneesApiPath`. Assignee removed from edit form `<select>`.
+
+### Data persistence paths (FR-015–FR-021, Session 2026-08-26)
+
+| Concern | Path | Notes |
+|---------|------|-------|
+| Ticket data root | `/var/ai-practical-assessment/tickets` | All create/list/update/status operations |
+| Ticket node | `/var/ai-practical-assessment/tickets/{ticket-id}` | Created by `CreateTicketServlet` / `TicketServiceImpl` |
+| Comment folder | `/var/ai-practical-assessment/tickets/{ticket-id}/comments` | Parent for comment child nodes |
+| Comment node | `/var/ai-practical-assessment/tickets/{ticket-id}/comments/{comment-id}` | `AddCommentServlet` read/write |
+| Create API | `POST /var/ai-practical-assessment/tickets.ticket.json` | `CreateTicketServlet`; `clientlib-ticket-create` fetch target |
+| List API | `GET /var/ai-practical-assessment/tickets.list.json` | `TicketListServlet`; dashboard query root |
+| Comment API | `POST /var/ai-practical-assessment/tickets/{ticket-id}/comments.comment.json` | `AddCommentServlet`; `clientlib-ticket-comments` fetch target |
+| UI pages | `/content/ai-practical-assessment/support-tickets/{dashboard\|create-ticket\|ticket}` | Unchanged — HTL passes `data-ticket-path` pointing to `/var/.../tickets/{id}` |
+
+**Repoinit**: Creates service user and `/home/users` read ACL only; `/var/ai-practical-assessment` folder tree + `rep:policy` ship in `ui.content`.
+
+**ui.content var tree**:
+
+```text
+ui.content/src/main/content/jcr_root/var/ai-practical-assessment/
+├── .content.xml              # sling:Folder
+├── _rep_policy.xml           # ticket-service ACL (hierarchy)
+└── tickets/
+    └── .content.xml          # sling:Folder + tickets-root resource type
+```
+
+**ClientLibs**: All folders under `ui.apps/.../clientlibs/` MUST set `allowProxy="{Boolean}true"`.
 
 All four ticket components include `_cq_dialog` (optional heading) and use
 `componentGroup="AI Capability Project - Content"` so they appear in the page editor.
