@@ -1,4 +1,4 @@
-package com.ttn.ai.core.services;
+package com.ttn.ai.core.services.impl;
 
 import static com.ttn.ai.core.constants.TicketConstants.COMMENTS_NODE_NAME;
 import static com.ttn.ai.core.constants.TicketConstants.PN_ASSIGNEE;
@@ -35,6 +35,7 @@ import java.util.UUID;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import com.ttn.ai.core.services.*;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.PersistenceException;
@@ -57,7 +58,6 @@ import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
-import com.ttn.ai.core.config.AssigneeConfig;
 import com.ttn.ai.core.services.dto.CommentDto;
 import com.ttn.ai.core.services.dto.TicketDto;
 import com.ttn.ai.core.services.dto.TicketListResult;
@@ -93,9 +93,6 @@ public class TicketServiceImpl implements TicketService {
 
     @Reference
     private TicketStatusTransitionValidator statusValidator;
-
-    @Reference
-    private AssigneeConfig assigneeConfig;
 
     private String ticketRootPath;
     private int defaultPageSize;
@@ -233,8 +230,6 @@ public class TicketServiceImpl implements TicketService {
             if (assignee != null) {
                 if (assignee.isBlank()) {
                     properties.remove(PN_ASSIGNEE);
-                } else if (!assigneeConfig.isValidAssignee(assignee)) {
-                    throw new TicketValidationException("Invalid assignee");
                 } else {
                     properties.put(PN_ASSIGNEE, assignee);
                 }

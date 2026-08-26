@@ -6,6 +6,8 @@
         "create service user ticket-service",
         "create path (nt:unstructured) /content/ai-practical-assessment/support-tickets",
         "set properties on /content/ai-practical-assessment/support-tickets\n  set sling:resourceType{String} to ai-practical-assessment/components/tickets-root\nend",
-        "set ACL on /content/ai-practical-assessment/support-tickets\n  allow jcr:read, jcr:write, jcr:nodeTypeManagement, rep:write for ticket-service\nend"
+        "set ACL on /content/ai-practical-assessment/support-tickets\n  allow jcr:read, jcr:write, jcr:nodeTypeManagement, rep:write for ticket-service\nend",
+        "set ACL on /home/users\n  allow jcr:read for ticket-service\nend",
+        "set ACL on /home/groups\n  allow jcr:read for ticket-service\nend"
     ]
 }

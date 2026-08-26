@@ -49,9 +49,10 @@ Log in as `admin` / `admin` (or any test user) before testing.
 1. Open a ticket detail page.
 2. Change title, description, priority; save.
 3. **Expected**: Values persist on reload; `lastModified` updated.
-4. Set assignee from dropdown; save.
-5. **Expected**: Assignee visible on dashboard and detail.
-6. Clear title and save → **Expected**: validation error.
+4. Click **Assignee** in meta → input appears; first click fetches assignees (check network once).
+5. Type to filter → **Expected**: suggestions update locally without new HTTP calls.
+6. Pick user → **Expected**: assignee updates in place, no full page reload; dashboard shows assignee on next visit.
+7. Clear title and save → **Expected**: validation error.
 
 ### VS-4: Add Comment (US4 / SC-006)
 

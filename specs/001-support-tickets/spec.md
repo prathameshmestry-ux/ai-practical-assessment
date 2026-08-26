@@ -38,6 +38,22 @@
 - Q: Must status change reload the page? → A: **No.** Status change on ticket detail MUST complete without full page refresh. After successful save, the status badge MUST update in place (label, color, menu options, or terminal read-only state).
 - Q: How is async status update delivered? → A: Dedicated ticket-detail client script intercepts menu selection, sends async request to the status API, and updates the status control DOM on success—no navigation or reload.
 
+### Session 2026-08-24
+
+- Q: How should Assignee work on ticket detail? → A: **Inline edit** in meta area—read-only assignee name (or "Unassigned") by default; click transforms to text input with suggestion dropdown.
+- Q: How is assignee list loaded? → A: First click fetches full assignable user list from backend GET endpoint (no search parameter); cached in browser `sessionStorage` for session.
+- Q: How does assignee search filter? → A: Typing filters cached list locally—no additional HTTP requests; dropdown updates instantly with matches.
+
+### Session 2026-08-24 (assignee source)
+
+- Q: Where does assignable user list come from? → A: **Platform user group `devs`**—not static OSGi list. Backend resolves direct group members; client still bulk GET + `sessionStorage` cache + local filter.
+- Q: What makes an assignee valid on save? → A: Selected user MUST be direct `devs` member meeting FR-007a criteria (superseded by assignee filter session below).
+
+### Session 2026-08-24 (assignee filter)
+
+- Q: Which users are assignable? → A: **Direct members** of platform user group **`devs`** only—individual user accounts, not nested groups. **System/service accounts** under `/home/users/system` excluded.
+- Q: What makes assignee valid on save? → A: Same filter—user must be direct `devs` member, individual account, not under `/home/users/system`.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Create Support Ticket (Priority: P1)
@@ -84,7 +100,7 @@ As a support agent, I want to open a ticket's detail view and update its fields 
 
 1. **Given** a ticket exists, **When** a user opens it from the dashboard, **Then** the detail view shows a unified status control: current status as a colored badge with chevron (when transitions allowed); clicking it opens a menu of valid next statuses only (one item each).
 2. **Given** a user is on the detail view, **When** they update editable fields and save, **Then** changes are persisted and reflected on subsequent views.
-3. **Given** a user reassigns a ticket to another valid assignee, **When** they save, **Then** the assignee field updates and remains visible on the dashboard and detail view.
+3. **Given** a user reassigns a ticket to another valid assignee via inline assignee control, **When** they select a user from filtered suggestions, **Then** the assignee updates on the detail view without full page reload and remains visible on the dashboard on next visit.
 4. **Given** a user enters invalid data (e.g., empty title), **When** they attempt to save, **Then** validation errors are shown and no partial save occurs.
 
 ---
@@ -133,6 +149,7 @@ As a support agent, I want to change a ticket's status through allowed transitio
 - How does the system behave when the dashboard contains a large number of tickets? List remains usable (pagination or reasonable default page size); user can still open any visible ticket.
 - What happens when two users update the same ticket concurrently? Last successful save wins for non-status fields, or user is notified if their save conflicts (either approach is acceptable if documented and consistent).
 - Can comments be added on **Closed** or **Cancelled** tickets? Comments remain allowed for audit trail unless ticket is archived (out of scope for v1—assume comments allowed on all non-deleted tickets).
+- What happens when assignee user is removed from `devs` group after assignment? Ticket retains stored user ID; display may fall back to ID until reassigned.
 - What happens if a ticket node is removed? All child comment nodes under that ticket's `comments` folder are removed with it; no orphan comments remain.
 
 ## Requirements *(mandatory)*
@@ -145,7 +162,10 @@ As a support agent, I want to change a ticket's status through allowed transitio
 - **FR-004**: System MUST display a dashboard listing all tickets with summary fields: identifier, title, status, priority, assignee, and last updated.
 - **FR-005**: System MUST allow users to open any listed ticket in a detail view showing full ticket data, status, assignee, requester, and timestamps.
 - **FR-006**: System MUST allow authorized users to update editable ticket fields (title, description, priority) from the detail view.
-- **FR-007**: System MUST allow authorized users to reassign a ticket to a valid assignee from the detail view.
+- **FR-007**: System MUST allow authorized users to reassign a ticket to a valid assignee from the ticket detail view using **inline editing**: assignee displays as read-only name (or "Unassigned"); click opens text input with suggestion list; selection saves assignee without requiring full page reload.
+- **FR-007a**: System MUST expose a bulk assignable-users list via authenticated GET—no search/query parameter required. List MUST include only **direct members** of platform user group **`devs`** who are **individual user accounts** (not nested groups) and whose account path does **not** start with `/home/users/system`.
+- **FR-007b**: Ticket detail client script MUST fetch assignable users on first assignee edit, cache list in browser session storage, and filter locally as the user types—no per-keystroke HTTP requests.
+- **FR-007c**: System MUST reject assignee values that are not direct `devs` group members meeting the same individual-user and non-system-account criteria as FR-007a.
 - **FR-008**: System MUST allow users to add text comments on a ticket; each comment MUST record author and timestamp.
 - **FR-009**: System MUST display comments on the ticket detail view in a consistent chronological order.
 - **FR-010**: System MUST support only these status transitions:
@@ -194,7 +214,7 @@ As a support agent, I want to change a ticket's status through allowed transitio
 - Users are authenticated before accessing ticket features; standard platform login applies.
 - Tickets are stored at `/content/ai-practical-assessment/support-tickets/{ticket-id}`; comments are child nodes at `.../comments/{comment-id}`. The dashboard queries ticket nodes under the support-tickets folder; the detail view loads a ticket node and its `comments` child nodes.
 - v1 includes a single support queue (no multi-department or multi-project ticket pools).
-- Assignee is selected from a predefined list of support agents (sourced from platform user directory or a configured list).
+- Assignee is selected from direct members of platform user group **`devs`**—individual user accounts only; system/service accounts under `/home/users/system` excluded.
 - Priority values are a fixed set: Low, Medium, High (default Medium if not specified on create).
 - Email or push notifications on create, assign, or status change are out of scope for v1.
 - Ticket deletion and bulk operations are out of scope for v1.

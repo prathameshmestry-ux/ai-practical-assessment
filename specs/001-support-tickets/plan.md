@@ -1,6 +1,6 @@
 # Implementation Plan: Support Ticket Management System
 
-**Branch**: `001-support-tickets` | **Date**: 2026-08-22 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-support-tickets` | **Date**: 2026-08-24 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/001-support-tickets/spec.md`
 
@@ -88,7 +88,8 @@ core/src/main/java/com/ttn/ai/core/
 │   ├── CreateTicketServlet.java
 │   ├── UpdateTicketServlet.java
 │   ├── AddCommentServlet.java
-│   └── UpdateTicketStatusServlet.java
+│   ├── UpdateTicketStatusServlet.java
+│   └── AssigneeUsersServlet.java
 └── constants/
     └── TicketConstants.java
 
@@ -148,6 +149,19 @@ Detail page reads `ticketId` from query parameter (`?ticketId={ticket-id}`).
 **Styling (FR-010b)**: `ticket-mui-status-btn` with status-specific color modifiers (`--open`, `--in-progress`, etc.); elevated `ticket-mui-status-menu`; Material Symbols chevron (`expand_more`). Dashboard list still uses `ticket-mui-chip` for status column.
 
 **ClientLib (FR-010c)**: `clientlib-ticket-detail` (`ticket-detail.js`) toggles menu; intercepts menu item click; POSTs via Fetch with CSRF header; on success calls `applyStatusToDom()`—updates badge, rebuilds menu from client transition map (mirrors `TicketStatusTransitionValidator`), or replaces dropdown with read-only badge + shows terminal notice. **Must not** call `window.location.reload()`.
+
+### Ticket detail — inline assignee (FR-007 / FR-007a / FR-007b)
+
+| UI | Behavior |
+|----|----------|
+| Meta `#ticket-assignee-root` | Read-only `#ticket-assignee-display` (name or "Unassigned"); click shows `#ticket-assignee-editor` with `#ticket-assignee-input` + `#ticket-assignee-suggestions` |
+| First edit | Fetch GET `.../support-tickets.assignees.json` → cache `users[]` in `sessionStorage` (`ticket-assignees-cache`) |
+| Typing | Filter cached users by `id` / `displayName` locally—no new HTTP calls |
+| Selection | POST `.../{ticket-id}.update.json` `{ "assignee": "user-id" }`; update display + `#ticket-last-modified` in place |
+
+**Servlet**: `AssigneeUsersServlet` — bulk list from `AssignableUserService` (`devs` group direct members; UserManager `Group.getMembers()`).
+
+**HTL**: `data-assignees-url` on `.cmp-ticket-detail` from `TicketDetailModel.assigneesApiPath`. Assignee removed from edit form `<select>`.
 
 All four ticket components include `_cq_dialog` (optional heading) and use
 `componentGroup="AI Capability Project - Content"` so they appear in the page editor.
