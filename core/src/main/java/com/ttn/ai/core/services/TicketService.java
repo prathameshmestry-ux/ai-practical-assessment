@@ -16,6 +16,9 @@ public interface TicketService {
 
     TicketListResult listTickets(int offset, int limit);
 
+    TicketListResult searchTickets(String keyword, String status, int offset, int limit)
+            throws TicketValidationException;
+
     TicketDto updateTicket(String ticketId, String title, String description, String priority, String assignee)
             throws TicketNotFoundException, TicketValidationException;
 

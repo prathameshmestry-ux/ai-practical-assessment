@@ -2,7 +2,11 @@
      data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
 <sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-dashboard']}"/>
 
-<div class="ticket-mui cmp-ticket-dashboard">
+<div class="ticket-mui cmp-ticket-dashboard"
+     data-search-api-url="${model.searchApiPath}"
+     data-tickets-api-url="${model.ticketsApiPath}"
+     data-empty-message="No tickets yet. Create the first support ticket."
+     data-detail-page="/content/ai-practical-assessment/support-tickets/ticket.html">
     <h2 class="ticket-mui__title">Support Tickets</h2>
     <p class="ticket-mui__subtitle">Monitor and manage all support requests.</p>
 
@@ -10,11 +14,49 @@
         <a class="ticket-mui-btn ticket-mui-btn--filled" href="/content/ai-practical-assessment/support-tickets/create-ticket.html">Create ticket</a>
     </div>
 
-    <div data-sly-test="${model.empty}" class="ticket-mui-empty cmp-ticket-dashboard__empty">
+    <div class="cmp-ticket-dashboard__search ticket-mui-field">
+        
+        <div class="cmp-ticket-dashboard__search-row">
+            <div class="ticket-mui-field">
+                <label for="ticket-dashboard-search">Search tickets</label>
+                <input id="ticket-dashboard-search"
+                    type="search"
+                    name="keyword"
+                    placeholder="Search by keyword"
+                    maxlength="200"
+                    autocomplete="off"/>
+            </div>
+            <div class="ticket-mui-field cmp-ticket-dashboard__status">
+                <label for="ticket-dashboard-status">Filter By Status</label>
+                <select id="ticket-dashboard-status" name="status">
+                    <option value="">All</option>
+                    <option value="open">Open</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="ticket-mui-field">
+                <button type="button"
+                        id="ticket-dashboard-search-btn"
+                        class="ticket-mui-btn ticket-mui-btn--filled">
+                    Search
+                </button>
+            </div>
+        </div>
+        <div id="ticket-dashboard-search-error" class="ticket-mui-alert ticket-mui-alert--error" hidden></div>
+    </div>
+
+    <div id="ticket-dashboard-empty"
+         class="ticket-mui-empty cmp-ticket-dashboard__empty"
+         data-sly-attribute.hidden="${!model.empty}">
         <p>No tickets yet. Create the first support ticket.</p>
     </div>
 
-    <div data-sly-test="${!model.empty}" class="ticket-mui-table-wrap">
+    <div id="ticket-dashboard-table-wrap"
+         class="ticket-mui-table-wrap"
+         data-sly-attribute.hidden="${model.empty}">
         <table class="ticket-mui-table cmp-ticket-dashboard__table">
             <thead>
                 <tr>
@@ -26,7 +68,7 @@
                     <th>Last Updated</th>
                 </tr>
             </thead>
-            <tbody data-sly-list.ticket="${model.tickets}">
+            <tbody id="ticket-dashboard-body" data-sly-list.ticket="${model.tickets}">
                 <tr>
                     <td>
                         <a href="/content/ai-practical-assessment/support-tickets/ticket.html?ticketId=${ticket.ticketId}">

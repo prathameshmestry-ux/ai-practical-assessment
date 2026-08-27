@@ -1,3 +1,29 @@
+.cmp-ticket-dashboard__search {
+    margin: 1rem 0;
+    max-width: 36rem;
+}
+
+.cmp-ticket-dashboard__search-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.cmp-ticket-dashboard__status {
+    flex: 0 0 auto;
+    min-width: 10rem;
+}
+
+.cmp-ticket-dashboard__status select {
+    width: 100%;
+}
+
+.cmp-ticket-dashboard__search-row input[type="search"] {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 .cmp-ticket-dashboard__table {
     display: table;
     width: 100%;

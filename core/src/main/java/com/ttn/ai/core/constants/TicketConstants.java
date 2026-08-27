@@ -7,6 +7,7 @@ public final class TicketConstants {
 
     public static final String TICKET_VAR_BASE_PATH = "/var/ai-practical-assessment";
     public static final String TICKET_ROOT_PATH = "/var/ai-practical-assessment/tickets";
+    public static final String TICKET_SEARCH_SERVLET_PATH = "/bin/ai-practical-assessment/search";
     public static final String HOME_USERS_PATH = "/home/users";
     public static final String HOME_USERS_SYSTEM_PATH = "/home/users/system";
     public static final String ASSIGNEE_GROUP_ID = "devs";

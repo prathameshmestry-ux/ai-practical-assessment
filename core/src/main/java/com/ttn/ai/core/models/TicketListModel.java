@@ -11,6 +11,7 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
+import com.ttn.ai.core.constants.TicketConstants;
 import com.ttn.ai.core.services.TicketService;
 import com.ttn.ai.core.services.dto.TicketDto;
 import com.ttn.ai.core.services.dto.TicketListResult;
@@ -48,6 +49,14 @@ public class TicketListModel {
 
     public long getTotal() {
         return listResult != null ? listResult.getTotal() : 0;
+    }
+
+    public String getTicketsApiPath() {
+        return TicketConstants.TICKET_ROOT_PATH;
+    }
+
+    public String getSearchApiPath() {
+        return TicketConstants.TICKET_SEARCH_SERVLET_PATH;
     }
 
     private int parseInt(String value, int defaultValue) {
