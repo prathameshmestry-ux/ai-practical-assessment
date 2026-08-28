@@ -12,6 +12,7 @@ import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
 import com.ttn.ai.core.constants.TicketConstants;
+import com.ttn.ai.core.servlets.ServletAuth;
 import com.ttn.ai.core.services.TicketService;
 import com.ttn.ai.core.services.dto.TicketDto;
 import com.ttn.ai.core.services.dto.TicketListResult;
@@ -30,13 +31,23 @@ public class TicketListModel {
 
     private TicketListResult listResult;
     private boolean empty;
+    private boolean loggedIn;
 
     @PostConstruct
     void init() {
+        loggedIn = ServletAuth.isAuthenticated(request);
+        if (!loggedIn) {
+            empty = true;
+            return;
+        }
         int offset = parseInt(request.getParameter("offset"), 0);
         int limit = parseInt(request.getParameter("limit"), 25);
         listResult = ticketService.listTickets(offset, limit);
         empty = listResult.getTickets().isEmpty();
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
     public List<TicketDto> getTickets() {

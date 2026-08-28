@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="nt:unstructured"
+    sling:resourceType="ai-practical-assessment/components/support-ticket"
+    created="{Date}2026-08-28T09:53:27.429+05:30"
+    description="Data Layer parameters does not reflect page name, instead shows random numbers."
+    lastModified="{Date}2026-08-28T09:53:27.429+05:30"
+    priority="high"
+    requester="admin"
+    status="open"
+    ticketId="ticket-5250a914-6096-4fb6-98fe-80f7e816e1b0"
+    title="Prod: Data Layer parameters issue">
+    <comments jcr:primaryType="nt:unstructured"/>
+</jcr:root>

@@ -36,9 +36,7 @@ public class SearchTicketsServlet extends SlingSafeMethodsServlet {
 
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-        if (!ServletAuth.isAuthenticated(request)) {
-            TicketApiJson.writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED",
-                    "Authentication required");
+        if (!ServletAuth.requireAuthenticated(request, response)) {
             return;
         }
         String keyword = request.getParameter("keyword");

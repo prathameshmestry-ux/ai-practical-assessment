@@ -42,9 +42,7 @@ public class CreateTicketServlet extends SlingAllMethodsServlet {
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws IOException {
-        if (!ServletAuth.isAuthenticated(request)) {
-            TicketApiJson.writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED",
-                    "Authentication required");
+        if (!ServletAuth.requireAuthenticated(request, response)) {
             return;
         }
         try {

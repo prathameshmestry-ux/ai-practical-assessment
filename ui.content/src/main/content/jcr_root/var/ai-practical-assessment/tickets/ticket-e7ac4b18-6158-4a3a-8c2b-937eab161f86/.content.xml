@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="nt:unstructured"
+    sling:resourceType="ai-practical-assessment/components/support-ticket"
+    created="{Date}2026-08-28T09:51:56.772+05:30"
+    description="Page keeps refreshing recursively. shared screenshots"
+    lastModified="{Date}2026-08-28T09:51:56.772+05:30"
+    priority="low"
+    requester="admin"
+    status="open"
+    ticketId="ticket-e7ac4b18-6158-4a3a-8c2b-937eab161f86"
+    title="Continous Page Refresh">
+    <comments jcr:primaryType="nt:unstructured"/>
+</jcr:root>

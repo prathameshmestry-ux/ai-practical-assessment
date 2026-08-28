@@ -1,0 +1,21 @@
+<sly data-sly-use.model="com.ttn.ai.core.models.HeaderModel"/>
+<header class="cmp-header" style="display: flex;margin-left:260px;justify-content: space-between;">
+    <div class="cmp-header__brand" style="display:flex" data-sly-test="${model.logoPath || model.websiteName}">
+        <img data-sly-test="${model.logoPath}"
+             class="cmp-header__logo"
+             src="${model.logoPath @ context='uri'}"
+             alt="${model.websiteName || 'Site logo'}" height="50px"/>
+        <h1 style="margin:0;margin-left:10px" data-sly-test="${model.websiteName}" class="cmp-header__name">${model.websiteName}</h1>
+    </div>
+    <div class="cmp-header__profile" style="margin-top:15px">
+        <div data-sly-test="${model.loggedIn}" class="cmp-header__profile-authenticated">
+            <span class="cmp-header__welcome">Welcome, ${model.userFullName}</span>
+            <a class="cmp-header__logout" href="${model.logoutPath @ context='uri'}" style="color:#2020e0">Logout</a>
+        </div>
+        <div data-sly-test="${!model.loggedIn}" class="cmp-header__profile-anonymous">
+            <a class="cmp-header__login"
+               href="${model.loginPath @ context='uri'}"
+               style="margin-left: 50px;color:#2020e0">Login</a>
+        </div>
+    </div>
+</header>

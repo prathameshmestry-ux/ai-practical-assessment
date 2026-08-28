@@ -31,6 +31,15 @@ final class TicketApiJson {
         writeJson(response, envelope);
     }
 
+    static void writeUnauthorized(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter writer = response.getWriter();
+        writer.write("{}");
+        writer.flush();
+    }
+
     static void writeError(HttpServletResponse response, int status, String code, String message)
             throws IOException {
         response.setStatus(status);
