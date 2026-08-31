@@ -41,4 +41,6 @@
 - Re-validated 2026-08-24: inline assignee edit + bulk GET + sessionStorage cache + local filter (FR-007a/b).
 - Re-validated 2026-08-24 (b): assignee source = platform users under `/home/users` via QueryBuilder/UserManager—not `AssigneeConfig` (FR-007a/c).
 - Re-validated 2026-08-24 (c): assignee pool = direct `devs` group members only; exclude nested groups + `/home/users/system` paths (FR-007a/c).
+- Re-validated 2026-08-26: ticket data under `/var/ai-practical-assessment/tickets` (FR-015–FR-021).
+- Re-validated 2026-08-26 (b): var `sling:Folder` nodes + rep:policy + ClientLib allowProxy (FR-022–FR-024).
 - Ready for `/speckit-plan` or implementation alignment.

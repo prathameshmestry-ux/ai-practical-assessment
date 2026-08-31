@@ -23,7 +23,7 @@ import com.ttn.ai.core.services.TicketValidationException;
 import com.ttn.ai.core.services.dto.CommentDto;
 
 /**
- * Adds a comment (POST .../{ticket-id}/comments.comment.json).
+ * Adds a comment (POST .../tickets/{ticket-id}/comments.comment.json).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(
@@ -39,9 +39,7 @@ public class AddCommentServlet extends SlingAllMethodsServlet {
 
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-        if (!ServletAuth.isAuthenticated(request)) {
-            TicketApiJson.writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED",
-                    "Authentication required");
+        if (!ServletAuth.requireAuthenticated(request, response)) {
             return;
         }
         String ticketId = resolveTicketId(request.getResource());

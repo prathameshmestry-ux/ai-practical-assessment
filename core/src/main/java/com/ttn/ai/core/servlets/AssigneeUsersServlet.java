@@ -22,7 +22,7 @@ import com.ttn.ai.core.services.AssignableUserService;
 import com.ttn.ai.core.services.dto.AssignableUserDto;
 
 /**
- * Returns bulk list of assignable AEM users under /home/users (GET .../support-tickets.assignees.json).
+ * Returns bulk list of assignable AEM users under /home/users (GET .../tickets.assignees.json).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(
@@ -42,9 +42,7 @@ public class AssigneeUsersServlet extends SlingSafeMethodsServlet {
 
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-        if (!ServletAuth.isAuthenticated(request)) {
-            TicketApiJson.writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED",
-                    "Authentication required");
+        if (!ServletAuth.requireAuthenticated(request, response)) {
             return;
         }
         try {

@@ -1,36 +1,44 @@
-<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
+<sly data-sly-use.model="com.ttn.ai.core.models.TicketCreateModel"
+     data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
 <sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-create']}"/>
 
-<div class="ticket-mui cmp-ticket-create" data-cmp-is="ticket-create">
-    <h2 class="ticket-mui__title">Create Support Ticket</h2>
-    <p class="ticket-mui__subtitle">Submit issue for tracking and resolution.</p>
+<div class="ticket-mui cmp-ticket-create" data-cmp-is="ticket-create" data-tickets-api-url="${model.ticketsApiPath}">
 
-    <div class="ticket-mui-card">
-        <form id="ticket-create-form" class="cmp-ticket-create__form">
-            <div class="ticket-mui-field">
-                <label for="ticket-title">Title</label>
-                <input id="ticket-title" name="title" type="text" required maxlength="200" placeholder="Brief summary"/>
-            </div>
+    <div data-sly-test="${!model.loggedIn}" class="ticket-mui-empty cmp-ticket-create__login-required">
+        <p>Please log in to view and manage tickets</p>
+    </div>
 
-            <div class="ticket-mui-field">
-                <label for="ticket-description">Description</label>
-                <textarea id="ticket-description" name="description" required maxlength="5000" placeholder="Describe the issue"></textarea>
-            </div>
+    <div data-sly-test="${model.loggedIn}">
+        <h2 class="ticket-mui__title">Create Support Ticket</h2>
+        <p class="ticket-mui__subtitle">Submit issue for tracking and resolution.</p>
 
-            <div class="ticket-mui-field">
-                <label for="ticket-priority">Priority</label>
-                <select id="ticket-priority" name="priority">
-                    <option value="low">Low</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="high">High</option>
-                </select>
-            </div>
+        <div class="ticket-mui-card">
+            <form id="ticket-create-form" class="cmp-ticket-create__form">
+                <div class="ticket-mui-field">
+                    <label for="ticket-title">Title</label>
+                    <input id="ticket-title" name="title" type="text" required maxlength="200" placeholder="Brief summary"/>
+                </div>
 
-            <div class="ticket-mui-actions">
-                <button type="submit" class="ticket-mui-btn ticket-mui-btn--filled">Create Ticket</button>
-            </div>
-        </form>
-        <div id="ticket-create-result" class="ticket-mui-alert ticket-mui-alert--success" hidden></div>
-        <div id="ticket-create-error" class="ticket-mui-alert ticket-mui-alert--error" hidden></div>
+                <div class="ticket-mui-field">
+                    <label for="ticket-description">Description</label>
+                    <textarea id="ticket-description" name="description" required maxlength="5000" placeholder="Describe the issue"></textarea>
+                </div>
+
+                <div class="ticket-mui-field">
+                    <label for="ticket-priority">Priority</label>
+                    <select id="ticket-priority" name="priority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="ticket-mui-actions">
+                    <button type="submit" class="ticket-mui-btn ticket-mui-btn--filled">Create Ticket</button>
+                </div>
+            </form>
+            <div id="ticket-create-result" class="ticket-mui-alert ticket-mui-alert--success" hidden></div>
+            <div id="ticket-create-error" class="ticket-mui-alert ticket-mui-alert--error" hidden></div>
+        </div>
     </div>
 </div>

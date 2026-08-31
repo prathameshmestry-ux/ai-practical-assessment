@@ -19,11 +19,15 @@ import static com.ttn.ai.core.constants.TicketConstants.PRIORITY_MEDIUM;
 import static com.ttn.ai.core.constants.TicketConstants.RT_TICKET;
 import static com.ttn.ai.core.constants.TicketConstants.RT_TICKETS_ROOT;
 import static com.ttn.ai.core.constants.TicketConstants.SERVICE_USER_SUBSERVICE;
+import static com.ttn.ai.core.constants.TicketConstants.STATUS_CANCELLED;
+import static com.ttn.ai.core.constants.TicketConstants.STATUS_CLOSED;
+import static com.ttn.ai.core.constants.TicketConstants.STATUS_IN_PROGRESS;
 import static com.ttn.ai.core.constants.TicketConstants.STATUS_OPEN;
+import static com.ttn.ai.core.constants.TicketConstants.STATUS_RESOLVED;
 import static com.ttn.ai.core.constants.TicketConstants.TICKET_ROOT_PATH;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
+import com.ttn.ai.core.util.TicketDateFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -70,8 +74,6 @@ import com.ttn.ai.core.services.dto.TicketListResult;
 public class TicketServiceImpl implements TicketService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TicketServiceImpl.class);
-    private static final DateTimeFormatter ISO_FORMAT = DateTimeFormatter.ISO_INSTANT;
-
     @ObjectClassDefinition(name = "Support Ticket Service Configuration")
     public @interface Config {
 
@@ -205,6 +207,61 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public TicketListResult searchTickets(String keyword, String status, int offset, int limit)
+            throws TicketValidationException {
+        boolean hasKeyword = keyword != null && !keyword.isBlank();
+        boolean hasStatus = status != null && !status.isBlank();
+        if (!hasKeyword && !hasStatus) {
+            throw new TicketValidationException("Keyword or status filter is required");
+        }
+        String normalizedStatus = hasStatus ? validateStatusFilter(status.trim()) : null;
+        int safeLimit = normalizeLimit(limit);
+        int safeOffset = Math.max(0, offset);
+        TicketListResult result = new TicketListResult();
+        result.setOffset(safeOffset);
+        result.setLimit(safeLimit);
+
+        try (ResourceResolver resolver = getServiceResolver()) {
+            Session session = resolver.adaptTo(Session.class);
+            if (session == null) {
+                result.setTotal(0);
+                result.setTickets(Collections.emptyList());
+                return result;
+            }
+            Map<String, String> predicates = buildSearchPredicates(
+                    hasKeyword ? keyword.trim() : null,
+                    normalizedStatus);
+            predicates.put("path", ticketRootPath);
+            predicates.put("type", "nt:unstructured");
+            predicates.put("property", PN_TICKET_ID);
+            predicates.put("property.operation", "exists");
+            predicates.put("orderby", "@lastModified");
+            predicates.put("orderby.sort", "desc");
+            predicates.put("p.offset", String.valueOf(safeOffset));
+            predicates.put("p.limit", String.valueOf(safeLimit));
+            predicates.put("p.guessTotal", "true");
+
+            Query query = queryBuilder.createQuery(PredicateGroup.create(predicates), session);
+            SearchResult searchResult = query.getResult();
+            result.setTotal(searchResult.getTotalMatches());
+            List<TicketDto> tickets = new ArrayList<>();
+            for (Hit hit : searchResult.getHits()) {
+                Resource resource = hit.getResource();
+                if (resource != null) {
+                    tickets.add(toTicketDto(resource, false));
+                }
+            }
+            result.setTickets(tickets);
+            return result;
+        } catch (LoginException | RepositoryException e) {
+            LOG.error("Failed to search tickets", e);
+            result.setTotal(0);
+            result.setTickets(Collections.emptyList());
+            return result;
+        }
+    }
+
+    @Override
     public TicketDto updateTicket(String ticketId, String title, String description, String priority, String assignee)
             throws TicketNotFoundException, TicketValidationException {
         try (ResourceResolver resolver = getServiceResolver()) {
@@ -309,19 +366,62 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
+    private Map<String, String> buildSearchPredicates(String keyword, String status) {
+        Map<String, String> predicates = new HashMap<>();
+        int propertyIndex = 1;
+        if (keyword != null && !keyword.isBlank()) {
+            String prefixValue = keyword + "%";
+            String propertyPrefix = propertyIndex + "_property";
+            if (keyword.startsWith("ticket-")) {
+                predicates.put(propertyPrefix, PN_TICKET_ID);
+                predicates.put(propertyPrefix + ".value", prefixValue);
+            } else {
+                predicates.put(propertyPrefix, PN_TITLE);
+                predicates.put(propertyPrefix + ".value", prefixValue);
+            }
+            predicates.put(propertyPrefix + ".operation", "like");
+            propertyIndex++;
+        }
+        if (status != null && !status.isBlank()) {
+            String propertyPrefix = propertyIndex + "_property";
+            predicates.put(propertyPrefix, PN_STATUS);
+            predicates.put(propertyPrefix + ".value", status);
+            propertyIndex++;
+        }
+        return predicates;
+    }
+
+    private String validateStatusFilter(String status) throws TicketValidationException {
+        if (STATUS_OPEN.equals(status)
+                || STATUS_IN_PROGRESS.equals(status)
+                || STATUS_RESOLVED.equals(status)
+                || STATUS_CLOSED.equals(status)
+                || STATUS_CANCELLED.equals(status)) {
+            return status;
+        }
+        throw new TicketValidationException("Invalid status filter");
+    }
+
     private Resource ensureTicketRoot(ResourceResolver resolver) throws PersistenceException {
         Resource root = resolver.getResource(ticketRootPath);
-        if (root == null) {
-            Resource parent = resolver.getResource("/content/ai-practical-assessment");
-            if (parent == null) {
-                throw new PersistenceException("Parent content path missing");
-            }
-            Map<String, Object> props = new HashMap<>();
-            props.put("jcr:primaryType", "nt:unstructured");
-            props.put("sling:resourceType", RT_TICKETS_ROOT);
-            root = resolver.create(parent, "support-tickets", props);
-            resolver.commit();
+        if (root != null) {
+            return root;
         }
+        Resource varFolder = resolver.getResource("/var");
+        if (varFolder == null) {
+            varFolder = resolver.create(resolver.getResource("/"), "var",
+                    Map.of("jcr:primaryType", "sling:Folder"));
+        }
+        Resource appFolder = resolver.getResource(ticketRootPath.substring(0, ticketRootPath.lastIndexOf('/')));
+        if (appFolder == null) {
+            appFolder = resolver.create(varFolder, "ai-practical-assessment",
+                    Map.of("jcr:primaryType", "sling:Folder"));
+        }
+        Map<String, Object> props = new HashMap<>();
+        props.put("jcr:primaryType", "sling:Folder");
+        props.put("sling:resourceType", RT_TICKETS_ROOT);
+        root = resolver.create(appFolder, "tickets", props);
+        resolver.commit();
         return root;
     }
 
@@ -350,13 +450,30 @@ public class TicketServiceImpl implements TicketService {
         if (includeComments) {
             Resource commentsFolder = ticketResource.getChild(COMMENTS_NODE_NAME);
             if (commentsFolder != null) {
-                List<CommentDto> comments = new ArrayList<>();
+                List<Resource> commentResources = new ArrayList<>();
                 for (Resource child : commentsFolder.getChildren()) {
                     if (!ResourceUtil.isNonExistingResource(child)) {
-                        comments.add(toCommentDto(child));
+                        commentResources.add(child);
                     }
                 }
-                comments.sort((a, b) -> a.getCreated().compareTo(b.getCreated()));
+                commentResources.sort((a, b) -> {
+                    Calendar left = a.getValueMap().get(PN_CREATED, Calendar.class);
+                    Calendar right = b.getValueMap().get(PN_CREATED, Calendar.class);
+                    if (left == null && right == null) {
+                        return 0;
+                    }
+                    if (left == null) {
+                        return -1;
+                    }
+                    if (right == null) {
+                        return 1;
+                    }
+                    return left.compareTo(right);
+                });
+                List<CommentDto> comments = new ArrayList<>();
+                for (Resource child : commentResources) {
+                    comments.add(toCommentDto(child));
+                }
                 dto.setComments(comments);
             }
         }
@@ -377,7 +494,7 @@ public class TicketServiceImpl implements TicketService {
         if (calendar == null) {
             return null;
         }
-        return ISO_FORMAT.format(calendar.toInstant());
+        return TicketDateFormatter.format(calendar);
     }
 
     private Calendar nowCalendar() {

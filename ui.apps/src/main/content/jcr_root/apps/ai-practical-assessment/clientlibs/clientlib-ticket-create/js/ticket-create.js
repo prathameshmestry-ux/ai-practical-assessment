@@ -6,9 +6,11 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         var form = document.getElementById('ticket-create-form');
-        if (!form) {
+        var root = document.querySelector('.cmp-ticket-create');
+        if (!form || !root) {
             return;
         }
+        var ticketsApiUrl = root.getAttribute('data-tickets-api-url') || '/var/ai-practical-assessment/tickets';
         form.addEventListener('submit', function (event) {
             event.preventDefault();
             var result = document.getElementById('ticket-create-result');
@@ -22,7 +24,7 @@
                 priority: document.getElementById('ticket-priority').value
             };
 
-            fetch('/content/ai-practical-assessment/support-tickets.ticket.json', {
+            fetch(ticketsApiUrl + '.ticket.json', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

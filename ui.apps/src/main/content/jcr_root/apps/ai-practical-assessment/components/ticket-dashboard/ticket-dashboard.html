@@ -1,45 +1,187 @@
 <sly data-sly-use.model="com.ttn.ai.core.models.TicketListModel"
+
      data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"/>
+
 <sly data-sly-call="${clientlib.all @ categories=['ai-practical-assessment.ticket-material','ai-practical-assessment.ticket-dashboard']}"/>
 
-<div class="ticket-mui cmp-ticket-dashboard">
-    <h2 class="ticket-mui__title">Support Tickets</h2>
-    <p class="ticket-mui__subtitle">Monitor and manage all support requests.</p>
 
-    <div class="ticket-mui-actions ticket-mui-nav">
-        <a class="ticket-mui-btn ticket-mui-btn--filled" href="/content/ai-practical-assessment/support-tickets/create-ticket.html">Create ticket</a>
+
+<div class="ticket-mui cmp-ticket-dashboard"
+
+     data-search-api-url="${model.searchApiPath}"
+     data-tickets-api-url="${model.ticketsApiPath}"
+
+     data-empty-message="No tickets yet. Create the first support ticket."
+
+     data-detail-page="/content/ai-practical-assessment/support-tickets/ticket.html">
+
+
+
+    <div data-sly-test="${!model.loggedIn}" class="ticket-mui-empty cmp-ticket-dashboard__login-required">
+
+        <p>Please log in to view and manage tickets</p>
+
     </div>
 
-    <div data-sly-test="${model.empty}" class="ticket-mui-empty cmp-ticket-dashboard__empty">
-        <p>No tickets yet. Create the first support ticket.</p>
+
+
+    <div data-sly-test="${model.loggedIn}">
+
+        <h2 class="ticket-mui__title">Support Tickets</h2>
+
+        <p class="ticket-mui__subtitle">Monitor and manage all support requests.</p>
+
+
+
+        <div class="ticket-mui-actions ticket-mui-nav">
+
+            <a class="ticket-mui-btn ticket-mui-btn--filled" href="/content/ai-practical-assessment/support-tickets/create-ticket.html">Create ticket</a>
+
+        </div>
+
+
+
+        <div class="cmp-ticket-dashboard__search ticket-mui-field">
+
+
+
+            <div class="cmp-ticket-dashboard__search-row">
+
+                <div class="ticket-mui-field">
+
+                    <label for="ticket-dashboard-search">Search tickets</label>
+
+                    <input id="ticket-dashboard-search"
+
+                        type="search"
+
+                        name="keyword"
+
+                        placeholder="Search by keyword"
+
+                        maxlength="200"
+
+                        autocomplete="off"/>
+
+                </div>
+
+                <div class="ticket-mui-field cmp-ticket-dashboard__status">
+
+                    <label for="ticket-dashboard-status">Filter By Status</label>
+
+                    <select id="ticket-dashboard-status" name="status">
+
+                        <option value="">All</option>
+
+                        <option value="open">Open</option>
+
+                        <option value="in-progress">In Progress</option>
+
+                        <option value="resolved">Resolved</option>
+
+                        <option value="closed">Closed</option>
+
+                        <option value="cancelled">Cancelled</option>
+
+                    </select>
+
+                </div>
+
+                <div class="ticket-mui-field">
+
+                    <button type="button"
+
+                            id="ticket-dashboard-search-btn"
+
+                            class="ticket-mui-btn ticket-mui-btn--filled">
+
+                        Search
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div id="ticket-dashboard-search-error" class="ticket-mui-alert ticket-mui-alert--error" hidden></div>
+
+        </div>
+
+
+
+        <div id="ticket-dashboard-empty"
+
+             class="ticket-mui-empty cmp-ticket-dashboard__empty"
+
+             data-sly-attribute.hidden="${!model.empty}">
+
+            <p>No tickets yet. Create the first support ticket.</p>
+
+        </div>
+
+
+
+        <div id="ticket-dashboard-table-wrap"
+
+             class="ticket-mui-table-wrap"
+
+             data-sly-attribute.hidden="${model.empty}">
+
+            <table class="ticket-mui-table cmp-ticket-dashboard__table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Title</th>
+
+                        <th>Status</th>
+
+                        <th>Priority</th>
+
+                        <th>Assignee</th>
+
+                        <th>Last Updated</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="ticket-dashboard-body" data-sly-list.ticket="${model.tickets}">
+
+                    <tr>
+
+                        <td>
+
+                            <a href="/content/ai-practical-assessment/support-tickets/ticket.html?ticketId=${ticket.ticketId}">
+
+                                ${ticket.ticketId}
+
+                            </a>
+
+                        </td>
+
+                        <td>${ticket.title}</td>
+
+                        <td><span class="ticket-mui-chip">${ticket.status}</span></td>
+
+                        <td>${ticket.priority}</td>
+
+                        <td>${ticket.assignee @ context='html'}</td>
+
+                        <td>${ticket.lastModified}</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
 
-    <div data-sly-test="${!model.empty}" class="ticket-mui-table-wrap">
-        <table class="ticket-mui-table cmp-ticket-dashboard__table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Assignee</th>
-                    <th>Last Updated</th>
-                </tr>
-            </thead>
-            <tbody data-sly-list.ticket="${model.tickets}">
-                <tr>
-                    <td>
-                        <a href="/content/ai-practical-assessment/support-tickets/ticket.html?ticketId=${ticket.ticketId}">
-                            ${ticket.ticketId}
-                        </a>
-                    </td>
-                    <td>${ticket.title}</td>
-                    <td><span class="ticket-mui-chip">${ticket.status}</span></td>
-                    <td>${ticket.priority}</td>
-                    <td>${ticket.assignee @ context='html'}</td>
-                    <td>${ticket.lastModified}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 </div>
+

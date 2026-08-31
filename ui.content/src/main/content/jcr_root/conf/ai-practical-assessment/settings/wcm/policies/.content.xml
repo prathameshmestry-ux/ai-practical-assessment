@@ -279,7 +279,7 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="XF Root"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[group:AI Capability Project - Content,/apps/ai-practical-assessment/components/form/container]">
+                    components="[group:AI Capability Project - Content,/apps/ai-practical-assessment/components/form/container,group:AI Capability Project - Structure]">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                     <cq:authoring jcr:primaryType="nt:unstructured">
                         <assetToComponentMapping jcr:primaryType="nt:unstructured">

@@ -21,7 +21,7 @@ import com.ttn.ai.core.services.TicketValidationException;
 import com.ttn.ai.core.services.dto.TicketDto;
 
 /**
- * Creates support tickets (POST .../support-tickets.ticket.json).
+ * Creates support tickets (POST .../tickets.ticket.json under ticket data root).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(
@@ -42,9 +42,7 @@ public class CreateTicketServlet extends SlingAllMethodsServlet {
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws IOException {
-        if (!ServletAuth.isAuthenticated(request)) {
-            TicketApiJson.writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED",
-                    "Authentication required");
+        if (!ServletAuth.requireAuthenticated(request, response)) {
             return;
         }
         try {

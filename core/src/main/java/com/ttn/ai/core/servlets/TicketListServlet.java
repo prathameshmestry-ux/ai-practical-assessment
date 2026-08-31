@@ -19,7 +19,7 @@ import com.ttn.ai.core.services.TicketService;
 import com.ttn.ai.core.services.dto.TicketListResult;
 
 /**
- * Lists support tickets (GET .../support-tickets.list.json).
+ * Lists support tickets (GET .../tickets.list.json under ticket data root).
  */
 @Component(service = Servlet.class)
 @SlingServletResourceTypes(
@@ -39,9 +39,7 @@ public class TicketListServlet extends SlingSafeMethodsServlet {
 
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-        if (!ServletAuth.isAuthenticated(request)) {
-            TicketApiJson.writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED",
-                    "Authentication required");
+        if (!ServletAuth.requireAuthenticated(request, response)) {
             return;
         }
         int offset = parseInt(request.getParameter("offset"), 0);

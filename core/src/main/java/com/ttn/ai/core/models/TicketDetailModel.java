@@ -12,6 +12,7 @@ import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
 import com.ttn.ai.core.constants.TicketConstants;
+import com.ttn.ai.core.servlets.ServletAuth;
 import com.ttn.ai.core.services.TicketNotFoundException;
 import com.ttn.ai.core.services.TicketService;
 import com.ttn.ai.core.services.TicketStatusTransitionValidator;
@@ -36,9 +37,14 @@ public class TicketDetailModel {
     private TicketDto ticket;
     private boolean notFound;
     private String errorMessage;
+    private boolean loggedIn;
 
     @PostConstruct
     void init() {
+        loggedIn = ServletAuth.isAuthenticated(request);
+        if (!loggedIn) {
+            return;
+        }
         String ticketId = request.getParameter("ticketId");
         if (ticketId == null || ticketId.isBlank()) {
             notFound = true;
@@ -49,6 +55,10 @@ public class TicketDetailModel {
         } catch (TicketNotFoundException e) {
             notFound = true;
         }
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
     public boolean isNotFound() {
