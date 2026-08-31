@@ -32,7 +32,7 @@ Log in as `admin` / `admin` (or any test user) before testing.
 1. Open **Create** page.
 2. Enter title, description, select priority; submit.
 3. **Expected**: Success message with `ticketId`; new node at
-   `/content/ai-practical-assessment/support-tickets/{ticket-id}` in CRXDE Lite
+   `/var/ai-practical-assessment/tickets{ticket-id}` in CRXDE Lite
    with `status=open`, `requester` = current user.
 4. Submit with empty title → **Expected**: validation error, no node created.
 
@@ -97,7 +97,7 @@ Obtain CSRF token from AEM, then:
 ```bash
 # Create (replace TOKEN)
 curl -u admin:admin -X POST \
-  "http://localhost:4502/content/ai-practical-assessment/support-tickets.ticket.json" \
+  "http://localhost:4502/var/ai-practical-assessment/tickets.ticket.json" \
   -H "Content-Type: application/json" \
   -H "CSRF-Token: TOKEN" \
   -d '{"title":"API test","description":"Via servlet","priority":"low"}'
@@ -123,7 +123,7 @@ mvn clean install
 | Symptom | Check |
 |---------|-------|
 | 401 on POST | User not logged in; missing CSRF token on Author |
-| 403 / save fails | Service user mapping in `ui.config`; `rep:policy` on `/content/ai-practical-assessment` in `ui.content` |
+| 403 / save fails | Service user mapping in `ui.config`; `rep:policy` on `/var/ai-practical-assessment` in `ui.content` |
 | Dashboard empty but nodes exist | Nodes missing `ticketId` property; wrong path |
 | Components missing in editor | Redeploy `ui.apps`; confirm `componentGroup` is **AI Capability Project - Content** and `_cq_dialog` exists on ticket components |
 
