@@ -5,7 +5,7 @@
 ## Repository Layout
 
 ```text
-/content/ai-practical-assessment/support-tickets/
+/var/ai-practical-assessment/tickets/
 └── {ticket-id}/                          # nt:unstructured (ticket node)
     ├── ticketId        (String, required)
     ├── title           (String, required, max 200)
@@ -35,7 +35,6 @@ No `ticketRef` property on comments (FR-017).
     ├── dashboard/                             # cq:Page — ticket-dashboard
     ├── create-ticket/                         # cq:Page — ticket-create
     ├── ticket/                                # cq:Page — ticket-detail + ticket-comments
-    └── {ticket-id}/                           # nt:unstructured (runtime ticket data)
 ```
 
 Locale folders (`us/en`) removed. Site content and XF live directly under `/content/ai-practical-assessment`.
@@ -56,7 +55,7 @@ Locale folders (`us/en`) removed. Site content and XF live directly under `/cont
 | `created` | DateTime | Yes | now | Set on create only |
 | `lastModified` | DateTime | Yes | now | Updated on every mutation |
 
-**JCR path**: `/content/ai-practical-assessment/support-tickets/{ticket-id}`
+**JCR path**: `/var/ai-practical-assessment/tickets/{ticket-id}`
 
 ### Comment
 
@@ -67,7 +66,7 @@ Locale folders (`us/en`) removed. Site content and XF live directly under `/cont
 | `author` | String | Yes | session user | Valid AEM user ID |
 | `created` | DateTime | Yes | now | Immutable after create |
 
-**JCR path**: `/content/ai-practical-assessment/support-tickets/{ticket-id}/comments/{comment-id}`
+**JCR path**: `/var/ai-practical-assessment/tickets/{ticket-id}/comments/{comment-id}`
 
 ### User (reference)
 
@@ -121,7 +120,7 @@ Comment 1 ──> 1 author (User)
 
 | Predicate | Value |
 |-----------|-------|
-| `path` | `/content/ai-practical-assessment/support-tickets` |
+| `path` | `/var/ai-practical-assessment/tickets` |
 | `type` | `nt:unstructured` |
 | `property` | `ticketId` |
 | `property.operation` | `exists` |
@@ -157,6 +156,6 @@ Exclude `comments/` folder nodes by requiring `ticketId` property (comments use
 
 | Mapping | Subservice | ACL |
 |---------|------------|-----|
-| `ai-practical-assessment:ticket-service` | `ticket-service` | read, write, create, delete on `/content/ai-practical-assessment` hierarchy via `ui.content` `rep:policy` |
+| `ai-practical-assessment:ticket-service` | `ticket-service` | read, write, create, delete on `/car/ai-practical-assessment` hierarchy via `ui.content` `rep:policy` |
 
 Defined in `ui.config` per AEM service user best practices (constitution V).

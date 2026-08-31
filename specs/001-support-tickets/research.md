@@ -7,7 +7,7 @@
 **Decision**: Store tickets and comments as `nt:unstructured` JCR nodes via the Sling
 Resource API; writes performed by a dedicated OSGi `TicketService` using a service
 resource resolver mapped to a service user with write access under
-`/content/ai-practical-assessment/support-tickets`.
+`/var/ai-practical-assessment/tickets`.
 
 **Rationale**: Matches clarified spec paths (FR-015–FR-017); avoids custom node types
 and CND overhead for v1; aligns with AEM archetype patterns and Cloud Service
@@ -23,7 +23,7 @@ compatibility.
 ## 2. Write Operations (Create, Update, Comment, Status)
 
 **Decision**: Four Sling servlets registered on fixed paths under
-`/content/ai-practical-assessment/support-tickets` (see contracts) accepting
+`/var/ai-practical-assessment/tickets` (see contracts) accepting
 `POST` with `application/json` or `application/x-www-form-urlencoded`; return JSON
 responses. Authenticated session required; CSRF token validated on Author.
 
@@ -39,7 +39,7 @@ Models for read paths.
 
 ## 3. Dashboard Query Strategy
 
-**Decision**: Use QueryBuilder with `path=/content/ai-practical-assessment/support-tickets`,
+**Decision**: Use QueryBuilder with `path=/var/ai-practical-assessment/tickets`,
 `type=nt:unstructured`, property `ticketId` exists, `p.limit=25` (configurable),
 `p.offset` for pagination. Sort by `lastModified` descending.
 
@@ -115,7 +115,7 @@ mirrors existing `helloworld` component structure in the project.
 ## 10. Page Structure & UI
 
 **Decision**: Support pages at `/content/ai-practical-assessment/support-tickets/dashboard`,
-`/support-tickets/create-ticket`, `/support-tickets/ticket` (siblings to ticket data nodes).
+`/support-tickets/create-ticket`, `/support-tickets/ticket`.
 Site root is `cq:Page`. Ticket components use group **AI Capability Project - Content**,
 each with `_cq_dialog` (optional heading), and are allowed in `page-content` container policies. UI uses Material Design tokens via
 `clientlib-ticket-material` (Roboto, cards, chips, elevated buttons).
@@ -164,7 +164,7 @@ for ticket field updates.
 ## 13. Inline Assignee UX (FR-007a / FR-007b)
 
 **Decision** (2026-08-24): Ticket detail meta shows inline assignee control. First click
-fetches bulk assignees via `GET .../support-tickets.assignees.json` (`AssigneeUsersServlet`);
+fetches bulk assignees via `GET .../tickets.assignees.json` (`AssigneeUsersServlet`);
 response `data.users[]` with `id` + `displayName`. Client caches in `sessionStorage`.
 Filter on keystroke locally; pick → POST `update.json` with `assignee` only.
 

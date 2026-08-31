@@ -24,7 +24,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 **Purpose**: Constants, content roots, package filters
 
 - [x] T001 Create `TicketConstants` (paths, property names, status/priority enums) in `core/src/main/java/com/ttn/ai/core/constants/TicketConstants.java`
-- [x] T002 [P] Add ticket data root folder `.content.xml` at `ui.content/src/main/content/jcr_root/content/ai-practical-assessment/support-tickets/.content.xml`
+- [x] T002 [P] Add ticket data root folder `.content.xml` at `ui.content/src/main/content/jcr_root/var/ai-practical-assessment/tickets/.content.xml`
 - [x] T003 [P] Update `ui.content/src/main/content/META-INF/vault/filter.xml` for `support-tickets` and `support` pages
 
 ---
@@ -42,7 +42,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 - [x] T008 [P] Create `AssigneeConfig` OSGi component in `core/src/main/java/com/ttn/ai/core/config/AssigneeConfig.java`
 - [x] T009 [P] Add `TicketServiceImpl` OSGi config at `ui.config/src/main/content/jcr_root/apps/ai-practical-assessment/osgiconfig/config/com.ttn.ai.core.services.impl.TicketServiceImpl.cfg.json`
 - [x] T010 [P] Add service user mapper amended config at `ui.config/src/main/content/jcr_root/apps/ai-practical-assessment/osgiconfig/config/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-ai-practical-assessment.cfg.json`
-- [x] T011 Add service user `rep:policy` ACL for `/content/ai-practical-assessment` in `ui.content` (per data-model.md service user table)
+- [x] T011 Add service user `rep:policy` ACL for `/var/ai-practical-assessment` in `ui.content` (per data-model.md service user table)
 - [x] T012 [P] Unit tests for `TicketStatusTransitionValidator` in `core/src/test/java/com/ttn/ai/core/services/TicketStatusTransitionValidatorTest.java`
 - [x] T013 Unit tests for `TicketServiceImpl` CRUD in `core/src/test/java/com/ttn/ai/core/services/TicketServiceImplTest.java`
 
@@ -58,7 +58,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 
 ### Implementation for User Story 1
 
-- [x] T014 [US1] Implement `CreateTicketServlet` (`POST .../support-tickets.ticket.json`) in `core/src/main/java/com/ttn/ai/core/servlets/CreateTicketServlet.java`
+- [x] T014 [US1] Implement `CreateTicketServlet` (`POST .../tickets.ticket.json`) in `core/src/main/java/com/ttn/ai/core/servlets/CreateTicketServlet.java`
 - [x] T015 [P] [US1] Create `ticket-create` component (`.content.xml`, HTL, dialog) in `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-create/`
 - [x] T016 [P] [US1] Add `ticket-create` clientlib (form POST/AJAX + CSRF) in `ui.apps/.../clientlibs/clientlib-ticket-create/`
 - [x] T017 [US1] Create page `ui.content/.../support-tickets/create-ticket/.content.xml` with `ticket-create` component
@@ -76,7 +76,7 @@ AEM modules: `core/`, `ui.apps/`, `ui.content/`, `ui.config/`, `it.tests/`, `ui.
 
 ### Implementation for User Story 2
 
-- [x] T019 [US2] Implement `TicketListServlet` (`GET .../support-tickets.list.json`) in `core/src/main/java/com/ttn/ai/core/servlets/TicketListServlet.java`
+- [x] T019 [US2] Implement `TicketListServlet` (`GET .../tickets.list.json`) in `core/src/main/java/com/ttn/ai/core/servlets/TicketListServlet.java`
 - [x] T020 [P] [US2] Create `TicketListModel` in `core/src/main/java/com/ttn/ai/core/models/TicketListModel.java`
 - [x] T021 [P] [US2] Create `ticket-dashboard` component in `ui.apps/src/main/content/jcr_root/apps/ai-practical-assessment/components/ticket-dashboard/`
 - [x] T022 [US2] Create page `ui.content/.../support-tickets/dashboard/.content.xml` with `ticket-dashboard` component

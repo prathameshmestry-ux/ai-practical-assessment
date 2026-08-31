@@ -158,7 +158,7 @@ Detail page reads `ticketId` from query parameter (`?ticketId={ticket-id}`).
 | UI | Behavior |
 |----|----------|
 | Meta `#ticket-assignee-root` | Read-only `#ticket-assignee-display` (name or "Unassigned"); click shows `#ticket-assignee-editor` with `#ticket-assignee-input` + `#ticket-assignee-suggestions` |
-| First edit | Fetch GET `.../support-tickets.assignees.json` → cache `users[]` in `sessionStorage` (`ticket-assignees-cache`) |
+| First edit | Fetch GET `.../tickets.assignees.json` → cache `users[]` in `sessionStorage` (`ticket-assignees-cache`) |
 | Typing | Filter cached users by `id` / `displayName` locally—no new HTTP calls |
 | Selection | POST `.../{ticket-id}.update.json` `{ "assignee": "user-id" }`; update display + `#ticket-last-modified` in place |
 

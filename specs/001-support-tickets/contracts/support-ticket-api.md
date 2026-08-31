@@ -2,7 +2,7 @@
 
 **Feature**: 001-support-tickets | **Version**: 1.0 | **Date**: 2026-08-12
 
-Base path: `/content/ai-practical-assessment/support-tickets`
+Base path: `/var/ai-practical-assessment/tickets`
 
 All endpoints require an authenticated AEM session. Anonymous requests receive
 `401 Unauthorized`. Invalid input receives `400 Bad Request` with JSON error body.
@@ -38,12 +38,14 @@ Error:
 
 ### 1. Create Ticket
 
-| | |
-|---|---|
-| **Method** | `POST` |
-| **Path** | `/content/ai-practical-assessment/support-tickets.ticket.json` |
-| **Servlet** | `CreateTicketServlet` |
-| **Story** | US1 |
+
+|             |                                                    |
+| ----------- | -------------------------------------------------- |
+| **Method**  | `POST`                                             |
+| **Path**    | `/var/ai-practical-assessment/tickets.ticket.json` |
+| **Servlet** | `CreateTicketServlet`                              |
+| **Story**   | US1                                                |
+
 
 **Request body** (`application/json`):
 
@@ -55,11 +57,13 @@ Error:
 }
 ```
 
-| Field | Required | Rules |
-|-------|----------|-------|
-| `title` | Yes | Non-blank, ≤200 chars |
-| `description` | Yes | Non-blank, ≤5000 chars |
-| `priority` | No | `low` \| `medium` \| `high`; default `medium` |
+
+| Field         | Required | Rules                  |
+| ------------- | -------- | ---------------------- |
+| `title`       | Yes      | Non-blank, ≤200 chars  |
+| `description` | Yes      | Non-blank, ≤5000 chars |
+| `priority`    | No       | `low`                  |
+
 
 **Response** `201 Created`:
 
@@ -68,7 +72,7 @@ Error:
   "success": true,
   "data": {
     "ticketId": "ticket-a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "path": "/content/ai-practical-assessment/support-tickets/ticket-a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "path": "/var/ai-practical-assessment/tickets/ticket-a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "status": "open",
     "requester": "admin",
     "created": "2026-08-12T12:00:00Z"
@@ -81,19 +85,23 @@ Error:
 
 ### 2. List Tickets (Dashboard)
 
-| | |
-|---|---|
-| **Method** | `GET` |
-| **Path** | `/content/ai-practical-assessment/support-tickets.list.json` |
-| **Servlet** | `TicketListServlet` (or Sling Model JSON exporter) |
-| **Story** | US2 |
+
+|             |                                                              |
+| ----------- | ------------------------------------------------------------ |
+| **Method**  | `GET`                                                        |
+| **Path**    | `/var/ai-practical-assessment/tickets.list.json` |
+| **Servlet** | `TicketListServlet` (or Sling Model JSON exporter)           |
+| **Story**   | US2                                                          |
+
 
 **Query parameters**:
 
-| Param | Default | Rules |
-|-------|---------|-------|
-| `offset` | `0` | ≥0 |
-| `limit` | `25` | 1–100 |
+
+| Param    | Default | Rules |
+| -------- | ------- | ----- |
+| `offset` | `0`     | ≥0    |
+| `limit`  | `25`    | 1–100 |
+
 
 **Response** `200 OK`:
 
@@ -124,11 +132,13 @@ Error:
 
 ### 3. Get Ticket Detail
 
-| | |
-|---|---|
-| **Method** | `GET` |
-| **Path** | `/content/ai-practical-assessment/support-tickets/{ticket-id}.json` |
-| **Story** | US3 |
+
+|            |                                                                     |
+| ---------- | ------------------------------------------------------------------- |
+| **Method** | `GET`                                                               |
+| **Path**   | `/var/ai-practical-assessment/tickets/{ticket-id}.json` |
+| **Story**  | US3                                                                 |
+
 
 **Response** `200 OK`: full ticket object including all fields.
 
@@ -138,12 +148,14 @@ Error:
 
 ### 4. Update Ticket
 
-| | |
-|---|---|
-| **Method** | `POST` |
-| **Path** | `/content/ai-practical-assessment/support-tickets/{ticket-id}.update.json` |
-| **Servlet** | `UpdateTicketServlet` |
-| **Story** | US3 |
+
+|             |                                                                            |
+| ----------- | -------------------------------------------------------------------------- |
+| **Method**  | `POST`                                                                     |
+| **Path**    | `/var/ai-practical-assessment/tickets/{ticket-id}.update.json` |
+| **Servlet** | `UpdateTicketServlet`                                                      |
+| **Story**   | US3                                                                        |
+
 
 **Request body** (partial update allowed):
 
@@ -156,12 +168,14 @@ Error:
 }
 ```
 
-| Field | Required | Rules |
-|-------|----------|-------|
-| `title` | No | If present: non-blank, ≤200 |
-| `description` | No | If present: non-blank, ≤5000 |
-| `priority` | No | Valid enum |
-| `assignee` | No | Must be in assignee config list; empty string clears assignee |
+
+| Field         | Required | Rules                                                         |
+| ------------- | -------- | ------------------------------------------------------------- |
+| `title`       | No       | If present: non-blank, ≤200                                   |
+| `description` | No       | If present: non-blank, ≤5000                                  |
+| `priority`    | No       | Valid enum                                                    |
+| `assignee`    | No       | Must be in assignee config list; empty string clears assignee |
+
 
 Cannot update `status` via this endpoint (use status endpoint).
 
@@ -171,12 +185,14 @@ Cannot update `status` via this endpoint (use status endpoint).
 
 ### 5. Add Comment
 
-| | |
-|---|---|
-| **Method** | `POST` |
-| **Path** | `/content/ai-practical-assessment/support-tickets/{ticket-id}/comments.comment.json` |
-| **Servlet** | `AddCommentServlet` |
-| **Story** | US4 |
+
+|             |                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------ |
+| **Method**  | `POST`                                                                               |
+| **Path**    | `/var/ai-practical-assessment/tickets/{ticket-id}/comments.comment.json` |
+| **Servlet** | `AddCommentServlet`                                                                  |
+| **Story**   | US4                                                                                  |
+
 
 **Request body**:
 
@@ -205,12 +221,14 @@ Cannot update `status` via this endpoint (use status endpoint).
 
 ### 6. Update Ticket Status
 
-| | |
-|---|---|
-| **Method** | `POST` |
-| **Path** | `/content/ai-practical-assessment/support-tickets/{ticket-id}/status.status.json` |
-| **Servlet** | `UpdateTicketStatusServlet` |
-| **Story** | US5 |
+
+|             |                                                                                   |
+| ----------- | --------------------------------------------------------------------------------- |
+| **Method**  | `POST`                                                                            |
+| **Path**    | `/var/ai-practical-assessment/tickets/{ticket-id}/status.status.json` |
+| **Servlet** | `UpdateTicketStatusServlet`                                                       |
+| **Story**   | US5                                                                               |
+
 
 **Request body**:
 
@@ -220,12 +238,14 @@ Cannot update `status` via this endpoint (use status endpoint).
 }
 ```
 
-| Value | Allowed when current status is |
-|-------|-------------------------------|
-| `in-progress` | `open` |
-| `cancelled` | `open`, `in-progress` |
-| `resolved` | `in-progress` |
-| `closed` | `resolved` |
+
+| Value         | Allowed when current status is |
+| ------------- | ------------------------------ |
+| `in-progress` | `open`                         |
+| `cancelled`   | `open`, `in-progress`          |
+| `resolved`    | `in-progress`                  |
+| `closed`      | `resolved`                     |
+
 
 **Response** `200 OK`: envelope `{ success: true, data: { ticketId, status, lastModified, ... } }`. Client uses `data.status` and `data.lastModified` for in-place DOM update (FR-010c)—no page reload required.
 
@@ -235,12 +255,14 @@ Cannot update `status` via this endpoint (use status endpoint).
 
 ### 6. List Assignable Users
 
-| | |
-|---|---|
-| **Method** | `GET` |
-| **Path** | `/content/ai-practical-assessment/support-tickets.assignees.json` |
-| **Servlet** | `AssigneeUsersServlet` |
-| **Story** | US3 / FR-007a |
+
+|             |                                                       |
+| ----------- | ----------------------------------------------------- |
+| **Method**  | `GET`                                                 |
+| **Path**    | `/var/ai-practical-assessment/tickets.assignees.json` |
+| **Servlet** | `AssigneeUsersServlet`                                |
+| **Story**   | US3 / FR-007a                                         |
+
 
 No query/search parameters. Returns direct members of `devs` group—individual users only; excludes `/home/users/system` paths (FR-007a).
 
@@ -265,21 +287,25 @@ Client caches `users` in `sessionStorage` on first assignee edit; filters locall
 
 ## Error Codes
 
-| Code | HTTP | Description |
-|------|------|-------------|
-| `UNAUTHORIZED` | 401 | No authenticated session |
-| `NOT_FOUND` | 404 | Ticket or comment not found |
-| `VALIDATION_ERROR` | 400 | Field validation failed |
-| `INVALID_STATUS_TRANSITION` | 400 | Status change not allowed (FR-011) |
-| `INTERNAL_ERROR` | 500 | Unexpected server error (no PII in message) |
+
+| Code                        | HTTP | Description                                 |
+| --------------------------- | ---- | ------------------------------------------- |
+| `UNAUTHORIZED`              | 401  | No authenticated session                    |
+| `NOT_FOUND`                 | 404  | Ticket or comment not found                 |
+| `VALIDATION_ERROR`          | 400  | Field validation failed                     |
+| `INVALID_STATUS_TRANSITION` | 400  | Status change not allowed (FR-011)          |
+| `INTERNAL_ERROR`            | 500  | Unexpected server error (no PII in message) |
+
 
 ## HTL / Component Integration
 
-| Component | Read | Write |
-|-----------|------|-------|
-| `ticket-create` | — | POST Create Ticket |
-| `ticket-dashboard` | GET List (or Sling Model) | — |
-| `ticket-detail` | GET Detail + Sling Model; GET Assignees | POST Update (fields + assignee), POST Status (FR-010c) |
-| `ticket-comments` | GET Detail comments[] | POST Add Comment |
+
+| Component          | Read                                    | Write                                                  |
+| ------------------ | --------------------------------------- | ------------------------------------------------------ |
+| `ticket-create`    | —                                       | POST Create Ticket                                     |
+| `ticket-dashboard` | GET List (or Sling Model)               | —                                                      |
+| `ticket-detail`    | GET Detail + Sling Model; GET Assignees | POST Update (fields + assignee), POST Status (FR-010c) |
+| `ticket-comments`  | GET Detail comments[]                   | POST Add Comment                                       |
+
 
 Detail page URL: `/content/ai-practical-assessment/support-tickets/ticket.html?ticketId={ticket-id}`
